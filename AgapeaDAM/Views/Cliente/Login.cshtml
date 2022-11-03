@@ -1,0 +1,46 @@
+﻿@model Cuenta
+
+<div class="container">
+    <!-- ------------------- mostrar errores personalizados -------------------------  -->
+   <div class="row">
+        <div class="col">
+            <div asp-validation-summary="All" class="text-danger"></div>
+        </div>
+    </div>
+    <!-- ----------------------------------------------------------------------------- -->
+
+    <div class="row">
+        <div class="col-8">
+            <h2>
+                Registrate en <strong>apagea.com</strong>
+            </h2>
+            <p>Registrate en apagea.com y disfruta de todos sus beneficios y comodidades.</p>
+            <a  class="btn btn-primary" asp-controller="Cliente" asp-action="Registro">Registarte</a>
+            <p><strong>Crea tus propias listas de libros (Consultar informacion)</strong></p>
+            <div class="col-1">
+                <img src="~/images/imagen-login.png" />
+            </div>
+        </div>
+
+        <div class="col-4">
+            <p><strong>Usuario de Apagea</strong></p>
+            <form method="post" asp-action="Login" asp-controller="Cliente">
+                <div class="mb-3">
+                    <label for="Email" class="form-label text-muted">Email</label>
+                    <input type="email" class="form-control" id="Email" placeholder="Mi usuario" asp-for="@Model.Email">
+                    <span class="text-danger" asp-validation-for="@Model.Email"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label for="Password" class="form-label text-muted">Contraseña</label>
+                    <input type="password" class="form-control" id="Password" placeholder="Contraseña" asp-for="@Model.Password">
+                    <span class="text-danger" asp-validation-for="@Model.Password"></span>
+                </div>
+               
+                <button type="submit" class="btn btn-primary">Identifícate</button>
+
+                <p class="text-muted">Al indentidicarte, aceptas nuestras Condiciones de uso, y nuestras condiciones de cookies</p>
+            </form>
+        </div>
+    </div>
+</div> 

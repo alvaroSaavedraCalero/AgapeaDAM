@@ -1,0 +1,367 @@
+﻿@model Cliente
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h2>Mi perfil</h2>
+            <div></div><!--sangria-->
+            <div class="alert alert-secondary" data-bs-toggle="collapse" href="#collapseDatos">Datos de perfil</div>
+            <div class="collapse" id="collapseDatos">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="row text-muted">Correo electrónico</div>
+                        <div class="row"><input type="text" id="inputEmail" class="input-group-text" style="width:90%" /></div>
+                        <div class="row text-muted">Contraseña</div>
+                        <div class="row"><input type="password" id="inputPass" class="input-group-text" style="width:90%" /></div>
+                        <div class="row text-muted">Nombre</div>
+                        <div class="row"><input type="text" id="inputNombre" class="input-group-text" style="width:90%" /></div>
+
+                    </div>
+
+                    <div class="col-sm-6">
+                        <div class="row text-muted">Teléfono</div>
+                        <div class="row"><input type="text" id="inputTlfn" class="input-group-text" style="width:90%" /></div>
+                        <div class="row text-muted">Repetir la contraseña</div>
+                        <div class="row"><input type="password" id="inputPassRep" class="input-group-text" style="width:90%" /></div>
+                        <div class="row text-muted">Apellidos</div>
+                        <div class="row"><input type="text" id="inputNombre" class="input-group-text" style="width:90% " /></div>
+
+                    </div>
+                </div>
+                <div class="row"><span></span></div>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div class="text-muted">Foto</div>
+                        <div id="avatarPerfil" class="card" style="width:200px;height:250px; background-color:aliceblue">
+                            <input type="file" id="selectorImagen" accept="image/*" style="visibility:visible" />
+                            <a id="linkSelectorImagen">
+                                <img src="~/images/imagen_usuario_default.PNG" id="imagenUsuario" style="width:200;height:250;" />
+                            </a>
+                            <button id="botonUploadImage" type="button" class="btn btn-link btn-sm">+ Sube una foto</button>
+                        </div>
+                    </div>
+                    <div class="col-sm-8">
+                        <div class="row text-muted">Usuario</div>
+                        <div class="row"><input type="text" id="inputUsuario" class="input-group-sm" /></div>
+                        <div class="row text-muted">Genero</div>
+                        <div class="row">
+                            <select class="form-select" aria-label="Elige genero">
+                                <option selected>Elige genero</option>
+
+                                <option value="H">Hombre</option>
+                                <option value="M">Mujer</option>
+                            </select>
+                        </div>
+                        <div class="row text-muted">Fecha de nacimiento</div>
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <select name="dia" id="dia" class="form-select">
+                                    <option>Elige día</option>
+
+                                </select>
+                            </div>
+                            <div class="col-sm-4">
+                                <select name="mes" id="mes" class="form-select">
+                                    <option>Elige mes</option>
+
+
+                                </select>
+                            </div>
+                            <div class="col-sm-4">
+                                <select name="mes" id="mes" class="form-select">
+                                    <option value="" selected="">Elige año</option>
+
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row text-muted">Descripcion</div>
+                        <div class="row"><textarea id="textArea"></textarea> </div>
+                        <div class="ro2 align-text-top"><a href=""> Darme de baja</a></div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="alert alert-secondary" data-bs-toggle="collapse" href="#collapseDirecciones">Direcciones</div>
+            <div class="collapse" id="collapseDirecciones">
+                <div>
+                    <p> Guarda todas tus direcciones de envío y elige la que usarás por defecto donde llegarán tus pedidos.</p>
+
+                    <p>
+                        Estas son las direcciones a las que puedes hacer tus envíos. Las direcciones de envío serán las que elijas mientras que la
+                        facturación será la misma en todas las direcciones:
+                    </p>
+                </div>
+
+                <hr />
+                <div class="container">
+                    <!--Lista de direcciones ya creadas del cliente-->
+                    @foreach (Direccion unaDirec in Model.MisDireciones)
+                    {
+                        <partial name="_VistaParcialMiniDireccion" model="unaDirec" />
+                    }
+                </div>
+
+
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                    + Nueva Direccion
+                </button>
+
+                <!-- Modal -->
+                <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="container">
+                                    <div class="row"><h3><strong>Nueva Direccion</strong></h3></div>
+                                    <hr>
+                                    <div class="row">
+                                        <p>Si desea que enviemos el pedido a una dirección distinta de la de facturación, modifique los campos a </p>
+                                        <p>continuación según proceda.</p>
+                                    </div>
+                                    <div class="row">
+                                        <!-- formulario de alta de direcciones -->
+                                        <form class="row g-3" id="formDirecciones" method="post" asp-action="AltaDireccion" asp-controller="Cliente">
+
+                                            <div class="col-12">
+                                                <label for="inputDireccion" class="form-label">Direccion de Envio:</label>
+                                                <input type="text" class="form-control" id="inputDireccion" name="calle" placeholder="Mi Direccion">
+                                            </div>
+
+                                            <div class="col-6">
+                                                <label for="inputCP" class="form-label">Codigo Postal:</label>
+                                                <input type="text" class="form-control" id="inputCP" name="cp" placeholder="Codigo Postal: 28803">
+                                            </div>
+                                            <div class="col-6">
+                                                <label for="inputPais" class="form-label">Pais:</label>
+                                                <input type="text" class="form-control" id="inputPais" name="pais" placeholder="España">
+                                            </div>
+
+
+                                            <div class="col-6">
+                                                <label for="inputProvincia" class="form-label">Provincia:</label>
+                                                <select id="inputProvincia" class="form-select" name="provincia">
+                                                    <option value="0" selected> - Seleccionar Provincia - </option>
+                                                    @{
+                                                        foreach (Provincia unaProv in (List<Provincia>)ViewData["provincias"])
+                                                        {
+                                                                                                                    <option value="@unaProv.CPRO-@unaProv.PRO">@unaProv.PRO</option>
+                                                        }
+                                                    }
+                                                </select>
+                                            </div>
+                                            <div class="col-6">
+                                                <label for="inputMunicipio" class="form-label">Municipio:</label>
+                                                <select id="inputMunicipio" class="form-select" name="municipio" disabled>
+                                                    <option value="0" selected> - Selecciona un Municipio -</option>
+                                                </select>
+                                            </div>
+
+                                            <input type="hidden" id="inputOperacion" name="operacion" value="crear" />
+
+                                            <hr />
+                                            <div class="col-12">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                                <button type="submit" id="btnCrearDireccion" class="btn btn-primary">Crear Direccion</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    // seleccionar imagen avatar usuario y subirla al servidor
+
+    let contenido = "";
+
+    document.getElementById('linkSelectorImagen').addEventListener('click', function (ev) {
+        document.getElementById('selectorImagen').dispatchEvent(new Event('click'));
+    });
+
+    document.getElementById('selectorImagen').addEventListener('change', function (ev) {
+        let fichero = ev.target.files[0];
+        console.log(fichero);
+
+        let lector = new FileReader();
+
+        lector.addEventListener('load', function (ev2) {
+            contenido = ev2.target.result;
+            console.log(contenido);
+            document.getElementById('imagenUsuario').setAttribute('src', contenido);
+            // habilito boton subir Imagen
+            document.getElementById('botonUploadImage').removeAttribute('disabled');
+        });
+
+        lector.readAsDataURL(fichero);
+    });
+
+    document.getElementById('botonUploadImage').addEventListener('click', function(ev){
+        window.alert('a subir la imagen al server por AJAX');
+        let peticionAjax = new XMLHttpRequest();
+        peticionAjax.open('POST', 'https://localhost:7281/Cliente/RecibirImagen');
+
+        peticionAjax.addEventListener('readystatechange', function(ev){
+            if (peticionAjax.status == 200 && peticionAjax.readyState == 4) {
+                let respuestaServer = peticionAjax.responseText;
+                console.log(respuestaServer);
+            }
+        });
+
+        peticionAjax.send({imgen: contenido});
+    });
+
+    //-------------------
+
+
+
+    function hacerPeticionAjax(cpro) {
+
+        // peticion Ajax para que cuando se seleccione una provincia, se cargen los municipios de esa provincia
+        var peticionAjax = new XMLHttpRequest();
+
+        peticionAjax.open('GET', 'https://apiv1.geoapi.es/municipios?CPRO=' + cpro + '&type=JSON&key=&sandbox=1');
+        //peticionAjax.open('GET', 'https://apiv1.geoapi.es/municipios?CPRO=${cpro}&type=JSON&key=&sandbox=1');
+
+        peticionAjax.addEventListener('readystatechange', function (ev) {
+            if (peticionAjax.readyState == 4 && peticionAjax.status == 200) {
+                let respuesta = JSON.parse(peticionAjax.responseText);
+                console.log('Respuesta del servicio rest para obener municipios... ', respuesta);
+
+                // antes de añadir los nuevos municipios hay que limpiar los anteriores
+                for (let nodo of document.getElementById('inputMunicipio').children) {
+                    if (nodo.getAttribute('value') != 0) {
+                        document.getElementById('inputMunicipio').removeChild(nodo);
+                    }
+                }
+
+                /*
+                // otra forma es transformar la lista a un array para poder usar el forEach()
+                Array.from(document.getElementById('inputMunicipio').children.forEach((nodo)=>{
+                    document.getElementById('inputMunicipio').removeChild(nodo);
+                });
+
+                */
+
+                // añadimos nuevos municipios de provincia seleccionada
+                respuesta.data.forEach(
+                    function (elemento, posicion, array) {
+                        var option = document.createElement('option');
+                        option.setAttribute('value', elemento.CMUM + '-' + elemento.DMUN50);
+                        option.appendChild(document.createTextNode(elemento.DMUN50));
+
+                        document.getElementById('inputMunicipio').appendChild(option);
+                    }
+                );
+            }
+        });
+        peticionAjax.send();
+    }
+
+
+
+    document.getElementById('inputProvincia').addEventListener('change', function (evt) {
+        var cpro = evt.target.value.split('-')[0];
+        // quitar atributo disable del select municipios
+        document.getElementById('inputMunicipio').removeAttribute('disabled');
+        hacerPeticionAjax(cpro); // <-- en .data esta la lista de municipios, hay que añadirlos al
+    });
+
+
+    // ...eventos click sobre botones Editar Direccion...
+    // seleccionamso todos los bototnes que su id comiencen con btnEditarDireccion
+    Array.from(document.querySelectorAll('button[id^="btnEditarDireccion"]')).forEach(
+        (elemento, posicion, array) => {
+            elemento.addEventListener('click', () => {
+                // window.alert('Has pulsado el boton Editar Direccion: ' + elemento.getAttribute('id'));
+
+                // mostramso modal de direcciones para modificar datos
+                // precargo los datos de la direccion en las cajas de texto del formulario y cambio la etiqueta  del boton a ACTUALIZAR DIRECCIONM
+                let divModal = new bootstrap.Modal(document.getElementById('staticBackdrop'));
+                divModal.show();
+
+                let idDireccion = elemento.getAttribute('id').split('_')[1];
+                // dos formas de recuperar datos de la direccion con ese idDireccion
+                // 1º peticion ajax a un servicio REST creado en tu servidor web para que te devuelva JSON con datos direccion
+                // 2º aprobechando el modelo (CLIENTE) asociado a la vista por parte del servidor
+
+                let listaDirecciones = '@Html.Raw(Json.Serialize(Model.MisDireciones))';
+                console.log(listaDirecciones);
+
+                let direccionEditar = JSON.parse(listaDirecciones).filter(function (elemento, pos, array) {
+                    return elemento.idDireccion == idDireccion;
+                })[0];
+
+                document.getElementById('inputDireccion').value = direccionEditar.calle;
+                document.getElementById('inputCP').value = direccionEditar.cp;
+                document.getElementById('inputPais').value = direccionEditar.pais;
+                // si en el nombre de provincia no aparecieran de forma aleatoria caracteres "_" esto funcionaria
+                // como no funciona tengo que buscar por cpro al principio del value de cada option y cambiar su atributo a selected
+                document.getElementById('inputProvincia').value = direccionEditar.provDirec.cpro + "-" + direccionEditar.provDirec.pro;
+                let optionProv = Array.from(document.querySelectorAll('#inputProvincia > option')).filter(
+                    (ele, pos, arr) => {
+                        let patron = new RegExp("^" + direccionEditar.provDirec.cpro + "-.{1,}");
+                        return patron.test(ele.getAttribute('value'));
+                    }
+                )[0];
+                optionProv.setAttribute('selected', 'true');
+
+                // disparo evento "change" sobre inputProvincia para que cargue municipios de esa provincia
+                document.getElementById('inputProvincia').dispatchEvent(new Event('change'));
+                setTimeout(
+                    () => {
+                        // si en el nombre de provincia no aparecieran de forma aleatoria caracteres "_" esto funcionaria
+                        //document.getElementById('inputMunicipio').value = direccionEditar.muniDirec.cmum + "-" + direccionEditar.muniDirec.dmuN50;
+                        // como no funciona, tengo que hacer lo mismo que en provincia
+                        let optionMuni = Array.from(document.querySelectorAll('#inputMunicipio > option')).filter(
+                            (ele, pos, arr) => {
+                                let patronMuni = new RegExp("^" + direccionEditar.muniDirec.cmum + "-.{1,}");
+                                return patronMuni.test(ele.getAttribute('value'));
+                            }
+                        )[0];
+                        optionMuni.setAttribute('selected', 'true');
+                    }, 7000
+                );
+
+                // cambio etiqueta del bototn submit del formulario a ACTUALIZAR DIRECCION
+                document.getElementById('btnCrearDireccion').textContent = 'ACTUALIZAR DIRECCION';
+                // cambio valor del input Hidden para indicar que no estamos creando una nueva direccion, si no modificandola
+                document.getElementById('inputOperacion').setAttribute('value', 'modificar_' + direccionEditar.idDireccion);
+
+            }); // cierre addEventListener
+        }
+    );
+
+    // ---eventos click sobre botones Borrar Direccion---
+    Array.from(document.querySelectorAll('button[id^="btnBorrarDireccion_"]')).forEach(
+        function (elem, posi, arra) {
+            elem.addEventListener('click', function (evt) {
+                // poner en el input hidden el valor borrar-idDireccion
+                // provocar el submit del formulario para que se manden los datos al servidor y se borren
+                let idDireccion = elem.getAttribute('id').split('_')[1];
+                document.getElementById('inputOperacion').setAttribute('value', 'borrar_' + idDireccion);
+
+                // OJO!!! el select municipios al estar disabled, no se mandaria nada en el formulario
+                // cuando provoco el submit... tengo que quitar ese atributo para que mande algo por defecto
+                document.getElementById('inputMunicipio').removeAttribute('disabled');
+
+                document.getElementById('formDirecciones').submit();
+            });
+        }
+    );
+
+</script>

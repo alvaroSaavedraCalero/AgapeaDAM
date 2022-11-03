@@ -1,0 +1,126 @@
+﻿@*
+    con la instruccion @model tipo indicas a la vista q va a recibir del controlador un objeto de ese tipo para hacer el BIND de sus propiedades con las cajas del
+    formulario de la vista
+    ¿como se hace el BIND de esas cajas con las props? usando atributo especial:  asp-for="@Model.propiedad"
+*@
+
+@model Cliente
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h3><strong>Registrate en Agapea.com</strong></h3>
+            <p>Tienes tres opciones para registrarte en agapea.com. Tienes tres opciones para registrarte en agapea.com. y disfrutar de nuestros servicios y ventajas. </p>
+            <p>Puedes hacerlo a través de las redes sociales en 4 segundos. O registrarte con nosotros, no tardarás más de 40 segundos en hacerlo. Solo tendrás que rellenar el siguiente formulario con tus datos. </p>
+        </div>
+    </div>
+
+    <hr />
+
+    <div class="row">
+        <div class="col">
+            <p>Registro con <img src="~/images/agapea-logo.svg" width="186px;" height="35px;"></p>
+        </div>
+    </div>
+
+    <!-- fila donde se muestra resumen de errores de validacion del modelo si los hay....
+            puedes poner dentro del atributo asp-validation-summary estos valores:
+
+                - All <-------- muestra errores de validacion definidos en clases modelo y en codigo
+                - ModelOnly <-- solo muestra errores de validacion definidos en clases modelo
+                - None <----- no muestra el validation summary
+
+    -->
+
+    <div class="row">
+        <div class="col">
+            <div asp-validation-summary="All" class="text-danger"></div>
+        </div>
+    </div>
+    <!-- ---------------------------------------------------------------------------------->
+
+
+    <div class="row">
+        <div class="col">
+            <form class="row g-3" method="post">
+              <div class="col-6">
+                <label for="inputEmail4" class="form-label">Correo:</label>
+                <input type="email" class="form-control" id="inputEmail4" placeholder="mail@mail.com" asp-for="@Model.CuentaCliente.Email">
+                <span asp-validation-for="@Model.CuentaCliente.Email" class="text-danger"></span>
+              </div>
+              <div class="col-6">
+                <label for="inputEmail5" class="form-label">Repetir Correo:</label>
+                <input type="email" class="form-control" id="inputEmail5" placeholder="mail@mail.com">
+              </div>
+
+
+              <div class="col-6">
+                <label for="inputPassword4" class="form-label">Contraseña:</label>
+                <input type="password" class="form-control" id="inputPassword4" placeholder="Contraseña.." asp-for="@Model.CuentaCliente.Password">
+                <span asp-validation-for="@Model.CuentaCliente.Password" class="text-danger"></span>
+              </div>
+              <div class="col-6">
+                <label for="inputPassword5" class="form-label">Repite Contraseña:</label>
+                <input type="password" class="form-control" id="inputPassword5" placeholder="Repite Contraseña..">
+              </div>
+
+
+              <div class="col-6">
+                <label for="inputNombre" class="form-label">Nombre:</label>
+                <input type="text" class="form-control" id="inputNombre" placeholder="introduce tu nombre..." asp-for="@Model.Nombre">
+                <span asp-validation-for="@Model.Nombre" class="text-danger"></span>
+              </div>
+              <div class="col-6">
+                <label for="inputApellidos" class="form-label">Apellidos:</label>
+                <input type="text" class="form-control" id="inputApellidos" placeholder="introduce tus apellidos..." asp-for="@Model.Apellidos">
+                <span asp-validation-for="@Model.Apellidos" class="text-danger"></span>
+              </div>
+
+              <div class="col-6">
+                <label for="inputLogin" class="form-label">Usuario:</label>
+                <input type="text" class="form-control" id="inputLogin" placeholder="introduce tu login..." asp-for="@Model.CuentaCliente.Login">
+                <span asp-validation-for="@Model.CuentaCliente.Login" class="text-danger"></span>
+              </div>
+              <div class="col-6">
+                <label for="inputTelefono" class="form-label">Telefono:</label>
+                <input type="text" class="form-control" id="inputTelefono" placeholder="introduce un tlfno..." asp-for="@Model.Telefono">
+                <span asp-validation-for="@Model.Telefono" class="text-danger"></span>
+              </div>
+
+              <div class="col-12">
+                  <p><span class="text-mutted">Agapea S.A se compromete a garantizar la seguridad de tus datos y a guardarlos en la más estricta confidencialidad.</span></p>
+              </div>
+
+              <hr />
+
+              <div class="col-12">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="checkInfo">
+                  <label class="form-check-label" for="checkInfo">
+                    Deseo recibir informacion sobre libros, novedades y eventos de Agapea.com.
+                  </label>
+                </div>
+              </div>
+
+              <div class="col-12">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="checkCondiciones" name="condUso" value="true" checked>
+                  <label class="form-check-label" for="checkCondiciones">
+                    Acepto las condiciones de uso y nuestra politica de cookies.
+                  </label>
+                </div>
+              </div>
+
+              <hr />
+
+              <div class="col-12">
+                <button type="submit" class="btn btn-primary btn-lg">REGISTRARME</button>
+              </div>
+            </form>
+        </div>
+    </div>
+
+
+
+
+</div>
