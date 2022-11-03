@@ -255,7 +255,7 @@ namespace AgapeaDAM.Models
                 switch (operacion)
                 {
                     case "crear":
-                        comandoEjecutar.CommandText = "insert into dbo.Direcciones values (@id, @calle, @cp, @cpro, @cmun, @esppal, @esfact, @idd, @pais";
+                        comandoEjecutar.CommandText = "insert into dbo.Direcciones values (@id, @calle, @cp, @cpro, @cmun, @esppal, @esfact, @idd, @pais)";
                         comandoEjecutar.Parameters.AddWithValue("@id", idCliente);
                         comandoEjecutar.Parameters.AddWithValue("@calle", nuevaDir.Calle);
                         comandoEjecutar.Parameters.AddWithValue("@cp", nuevaDir.CP);
