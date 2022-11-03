@@ -227,7 +227,7 @@ namespace AgapeaDAM.Models
                 // hay que hacer un update sobre la tabla cuentas y poner columna cuentaActiva a true
                 SqlConnection conexionBD = new SqlConnection(this.CadenaConexionSever);
                 conexionBD.Open();
-                SqlCommand updateCuenta = new SqlCommand("update dbo.Cuentas set CuentaActiva=true where IdCuenta=@id", conexionBD);
+                SqlCommand updateCuenta = new SqlCommand("update dbo.Cuentas set CuentaActivada=true where IdCuenta=@id", conexionBD);
                 updateCuenta.Parameters.AddWithValue("@id", idCuenta);
 
                 int filasModificadas = updateCuenta.ExecuteNonQuery();
