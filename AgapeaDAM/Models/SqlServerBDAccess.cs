@@ -20,6 +20,12 @@ namespace AgapeaDAM.Models
 
 
         #region ...metodos de la clase de acceso a datos contra sqlserver....
+
+        /// <summary>
+        /// Funcion para registrar un cliente en la base de datos
+        /// </summary>
+        /// <param name="clienteAguardar">Los datos del cliente a registrar</param>
+        /// <returns>Retorna true en caso de que todo vaya bien</returns>
         public Boolean RegistrarClliente(Cliente clienteAguardar)
         {
 
@@ -86,7 +92,12 @@ namespace AgapeaDAM.Models
 
         }
 
-
+        /// <summary>
+        /// Funcion para comprobar si existe un cliente en la base de datos
+        /// </summary>
+        /// <param name="email">Email del cliente a comprobar</param>
+        /// <param name="password">Contraseña del cliente a comprobar</param>
+        /// <returns>Retorna el cliente con todos los datos existentes en la BD, en caso de que exista</returns>
         public Cliente ExisteCliente(string email, string password)
         {
             try
@@ -191,6 +202,11 @@ namespace AgapeaDAM.Models
             }
         }
 
+        /// <summary>
+        /// Funcion para comprobar si la cuenta de un cliente esta activa
+        /// </summary>
+        /// <param name="email">El email del cliente</param>
+        /// <returns>Retorna true en caso de que la cuenta este activa</returns>
         public bool ComprobarCuentaActiva(string email)
         {
             try
@@ -220,6 +236,11 @@ namespace AgapeaDAM.Models
             }
         }
 
+        /// <summary>
+        /// Funcion para activar la cuenta de un cliente
+        /// </summary>
+        /// <param name="idCuenta">El id de la cuenta del cliente</param>
+        /// <returns>Retorna true en caso de que la cuenta se haya activado correctamente</returns>
         public bool activarCuentaCliente(string idCuenta)
         {
             try
@@ -242,6 +263,13 @@ namespace AgapeaDAM.Models
             }
         }
 
+        /// <summary>
+        /// Funcion para operar con las direcciones
+        /// </summary>
+        /// <param name="nuevaDir">Direccion con la que operar en caso de insertar o modificar</param>
+        /// <param name="idCliente">El id del cliente</param>
+        /// <param name="operacion">La operacion que queremos realizar</param>
+        /// <returns>Retorna true en caso de que la operacion sea satisfactoria</returns>
         public bool operarDireccion(Direccion nuevaDir, String idCliente, String operacion)
         {
             try
@@ -255,6 +283,7 @@ namespace AgapeaDAM.Models
                 switch (operacion)
                 {
                     case "crear":
+                        // En el caso de crear, insertaremos una nueva Direccion con los datos de "nuevaDir"
                         comandoEjecutar.CommandText = "insert into dbo.Direcciones values (@id, @calle, @cp, @cpro, @cmun, @esppal, @esfact, @idd, @pais)";
                         comandoEjecutar.Parameters.AddWithValue("@id", idCliente);
                         comandoEjecutar.Parameters.AddWithValue("@calle", nuevaDir.Calle);
@@ -269,7 +298,8 @@ namespace AgapeaDAM.Models
                         break;
 
                     case "modificar":
-                        comandoEjecutar.CommandText = "update dbo.Direcciones set Calle=@calle, CP=@cp, Provincia=@cpro, Municipio=@cmum, EsPrincipal=0, EsFacturacion=0, Pais=@pais where IdDireccion=@idd";
+                        // Modificamos la direccion que corresponde al idDireccion
+                        comandoEjecutar.CommandText = "update dbo.Direcciones set Calle=@calle, CP=@cp, Provincia=@cpro, Municipio=@cmun, EsPrincipal=0, EsFacturacion=0, Pais=@pais where IdDireccion=@idd";
                         comandoEjecutar.Parameters.AddWithValue("@calle", nuevaDir.Calle);
                         comandoEjecutar.Parameters.AddWithValue("@cp", nuevaDir.CP);
                         comandoEjecutar.Parameters.AddWithValue("@cpro", nuevaDir.ProvDirec.CPRO + "-" + nuevaDir.ProvDirec.PRO);
@@ -279,6 +309,7 @@ namespace AgapeaDAM.Models
                         break;
 
                     case "borrar":
+                        // Eliminamos la direccion correspondiente al idDireccion
                         comandoEjecutar.CommandText = "delete dbo.Direcciones where IdDireccion=@idd";
                         comandoEjecutar.Parameters.AddWithValue("@idd", nuevaDir.IdDireccion);
                         break;
