@@ -33,12 +33,15 @@
                     <div class="col-sm-4">
                         <div class="text-muted">Foto</div>
                         <div id="avatarPerfil" class="card" style="width:200px;height:250px; background-color:aliceblue">
-                            <input type="file" id="selectorImagen" accept="image/*" style="visibility:visible" />
-                            <a id="linkSelectorImagen">
-                                <img src="~/images/imagen_usuario_default.PNG" id="imagenUsuario" style="width:200;height:250;" />
+                            <input type="file" id="selectorImagen" accept="image/*" style="visibility:hidden;" />
+                            <a id="linkselectorImagen" onclick="document.getElementById('selectorImagen').dispatchEvent(new Event('MouseClick'))">
+                                <img src="~/images/imagen_usuario_default.PNG"
+                                     id="imagenUsuario"
+                                     style="width:200;height:250;" />
                             </a>
-                            <button id="botonUploadImage" type="button" class="btn btn-link btn-sm">+ Sube una foto</button>
+                            
                         </div>
+                        <button id="botonUploadImage" type="button" class="btn btn-link btn-sm">+ Sube una foto</button>
                     </div>
                     <div class="col-sm-8">
                         <div class="row text-muted">Usuario</div>
@@ -150,7 +153,7 @@
                                                     @{
                                                         foreach (Provincia unaProv in (List<Provincia>)ViewData["provincias"])
                                                         {
-                                                            <option value="@unaProv.CPRO-@unaProv.PRO">@unaProv.PRO</option>
+                                                                <option value="@unaProv.CPRO-@unaProv.PRO">@unaProv.PRO</option>
                                                         }
                                                     }
                                                 </select>
@@ -188,10 +191,6 @@
     // seleccionar imagen avatar usuario y subirla al servidor
 
     let contenido = "";
-
-    document.getElementById('linkSelectorImagen').addEventListener('click', function (ev) {
-        document.getElementById('selectorImagen').dispatchEvent(new Event('click'));
-    });
 
     document.getElementById('selectorImagen').addEventListener('change', function (ev) {
         let fichero = ev.target.files[0];
