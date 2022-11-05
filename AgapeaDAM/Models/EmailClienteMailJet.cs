@@ -17,7 +17,7 @@ namespace AgapeaDAM.Models
 
         #endregion
 
-        #region
+        #region metodos de la clase
 
         // el async y el Task<Boolean> es para que el await pueda funcionar, ya que tiene que esperar al resultado de la operacion
         public async Task<Boolean> enviarEmail(String emailCliente, String subject, String body, String? ficheroAdjunto)

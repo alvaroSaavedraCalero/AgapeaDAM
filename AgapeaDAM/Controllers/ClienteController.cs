@@ -35,12 +35,26 @@ namespace AgapeaDAM.Controllers
         #region 1-metodos devuelven vistas
 
         #region _______________REGISTRO_____________
+
+        /// <summary>
+        /// Lanzamos la vista con un nuevo Cliente
+        /// </summary>
+        /// <returns>Nos retorna la vista con los datos del cliente</returns>
         [HttpGet]
         public IActionResult Registro()
         {
             return View(new Cliente());
         }
 
+        /// <summary>
+        /// Obtenemos la vista con los datos del cliente, y comprobamos de la vista si esta 
+        /// checked el checkbox con name = "condUso"
+        /// </summary>
+        /// <param name="datoscliente">El objeto Cliente con los datos rellenos</param>
+        /// <param name="condUso">El checkBox de la vista</param>
+        /// <returns>Nos retornara la propia vista en caso de que exista algun dato mal
+        ///     Si esta todo bien, redireccionamos a la vista RegistroOK
+        /// </returns>
         [HttpPost]
         public IActionResult Registro(Cliente datoscliente, [FromForm] Boolean condUso)
         {
@@ -73,18 +87,24 @@ namespace AgapeaDAM.Controllers
                 }
                 else
                 {
+                    // Añadimos un mensaje de error al ModelState y retornamos la propia vista
                     ModelState.AddModelError("", "Fallos internos en el servidor, intentalo de nuevo mas tarde");
                     return View(datoscliente);
                 }
             }
             else
             {
-                //vuelvo a la vista Registro.cshtml con los datos del objeto Cliente q me han mandado para q el model-binder pinte errores de validacion
+                //vuelvo a la vista Registro.cshtml con los datos del objeto Cliente q me han mandado para
+                //q el model-binder pinte errores de validacion
                 return View(datoscliente);
 
             }
         }
 
+        /// <summary>
+        /// Funcion que retorna la vista RegistroOK
+        /// </summary>
+        /// <returns>La propia vista</returns>
         [HttpGet]
         public IActionResult RegistroOK()
         {
@@ -95,18 +115,31 @@ namespace AgapeaDAM.Controllers
 
         #region ______________LOGIN_______________________
 
+        /// <summary>
+        /// Funcion para lanzar la vista "Login"
+        /// </summary>
+        /// <returns>La propia vista</returns>
         [HttpGet]
         public IActionResult Login()
         {
             return View(new Cuenta());
         }
 
+
+        /// <summary>
+        /// Funcion para obtener la vista Login rellena con los datos 
+        /// </summary>
+        /// <param name="cuentauser">La cuenta para rellenar el mail y el password</param>
+        /// <returns>Retornara la vista "Login" con los mensajes de error en caso de que sean erroneos
+        ///     O la vista "InicioPanel" en caso de que sean correctos.
+        /// </returns>
         [HttpPost]
         public IActionResult Login(Cuenta cuentauser)
         {
             /*
-              si pregunto por ModelStata.IsValid siempre va a ser FALSE aunque los campos Email y Password cumplan validaciones
-            ¿por que? pq la propiedad LOGIN del modelo no ESTA ASOCIADA en la vista A NINGUN CAMPO!!! y por tanto no se puede validar su contenido y siempre
+            si pregunto por ModelStata.IsValid siempre va a ser FALSE aunque los campos Email y Password cumplan validaciones
+            ¿por que? pq la propiedad LOGIN del modelo no ESTA ASOCIADA en la vista A NINGUN CAMPO!!! 
+            y por tanto no se puede validar su contenido y siempre
             su estado de validacion es FALSE
              */
             if (
@@ -128,7 +161,6 @@ namespace AgapeaDAM.Controllers
                         // metemos en el diccionario del estado de sesion el String y el objeto de tipo Cliente serializado en formato JSON
                         HttpContext.Session.SetString("datosCliente", JsonSerializer.Serialize<Cliente>(_clienteLogged));
 
-
                         //redirecciono al panel del usuario...
                         return RedirectToAction("InicioPanel");
                     }
@@ -142,13 +174,14 @@ namespace AgapeaDAM.Controllers
                 else
                 {
                     //cuenta no activada...reenviar el email
+                    String body = "<h3><strong>Email de activación de su cuenta</strong><7h3>" +
+                        $"<hr><p>Pulsa <a href='https://localhost:7281/Cliente/activarCuenta/{cuentauser.IdCuenta}'>AQUI</a> para activar tu cuenta de correo y poder hacer LOGIN en el portal</p></hr>";
+                    this.clienteEmail.enviarEmail(cuentauser.Email, "Reenvio de email de Activación", body, "");
 
                     //y mandar al login
                     ModelState.AddModelError("", "*Tu cuenta no esta ACTIVADA, se te ha mandado un email para que la actives.");
                     return View(cuentauser);
                 }
-
-
 
             }
             else
@@ -162,6 +195,15 @@ namespace AgapeaDAM.Controllers
 
         #region _____________PANEL_CLIENTES_________________
 
+        /// <summary>
+        /// Funcion para lanzar la vista "InicioPanel", esta funcion es asincrona por
+        /// el acceso a la API de geoapi
+        /// </summary>
+        /// <returns>
+        ///     - En caso de no poder recuperar los datos del estado de sesion, redirigimos a la vista "Login"
+        ///     - En caso de poder recuperar los datos del estado de sesion, retornamos la vista "InicioPanel" con los datos
+        ///         del cliente
+        /// </returns>
         [HttpGet]
         public async Task<IActionResult> InicioPanel()
         {
@@ -195,12 +237,27 @@ namespace AgapeaDAM.Controllers
             }
             catch (Exception ex)
             {
-                // le obligo a que se loguee de nuevo para crear la cookie con el token de sesion y el servidor reserve un estado de sesion nuevo
+                // le obligo a que se loguee de nuevo para crear la cookie con el token de sesion
+                // y el servidor reserve un estado de sesion nuevo
                 return RedirectToAction("Login");
             }
 
         }
 
+
+        /// <summary>
+        /// Funcion para añadir, modificar o crear una direccion con los datos de la vista 
+        /// </summary>
+        /// <param name="calle"></param>
+        /// <param name="cp"></param>
+        /// <param name="pais"></param>
+        /// <param name="provincia"></param>
+        /// <param name="municipio"></param>
+        /// <param name="operacion"></param>
+        /// <returns>
+        ///     - Retorna la vista "InicioPanel" con los datos añadidos, modificados o eliminados
+        ///     - Retorna la vista "Login" en caso de que no podamos obtener los datos del estado de sesion
+        /// </returns>
         [HttpPost]
         public IActionResult AltaDireccion([FromForm] String calle, [FromForm] String cp,
             [FromForm] String pais, [FromForm] String provincia, [FromForm] String municipio, [FromForm] String operacion)
@@ -215,8 +272,10 @@ namespace AgapeaDAM.Controllers
                     calle = ""; cp = "0"; pais = "España"; provincia = "0-xdxd"; municipio = "0-xdxd";
                 }
 
+                // Obtenemos el cliente de los datos de sesion
                 Cliente cliente = JsonSerializer.Deserialize<Cliente>(HttpContext.Session.GetString("datosCliente"));
 
+                // Rellenamos una direccion con los datos de la vista
                 Direccion nuevaDireccion = new Direccion
                 {
                     Calle = calle,
@@ -271,14 +330,17 @@ namespace AgapeaDAM.Controllers
 
                     // actualizo variable de sesion
                     HttpContext.Session.SetString("datosCliente", JsonSerializer.Serialize<Cliente>(cliente));
-                } else
+                }
+                else
                 {
-                    // algo ha fallado en el insert, updatre o delete en bd, mandar mensaje de error a la vista
+                    // algo ha fallado en el insert, update o delete en bd, mandar mensaje de error a la vista
+                    ModelState.AddModelError("", "Algo ha ido mal en el servidor, intentelo mas tarde");
+                    return View();
                 }
 
                 return RedirectToAction("InicioPanel");
 
-                
+
             }
             catch (Exception)
             {
