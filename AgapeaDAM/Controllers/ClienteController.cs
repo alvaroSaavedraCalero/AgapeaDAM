@@ -335,7 +335,7 @@ namespace AgapeaDAM.Controllers
                 {
                     // algo ha fallado en el insert, update o delete en bd, mandar mensaje de error a la vista
                     ModelState.AddModelError("", "Algo ha ido mal en el servidor, intentelo mas tarde");
-                    return View();
+                    return RedirectToAction("InicioPanel");
                 }
 
                 return RedirectToAction("InicioPanel");
