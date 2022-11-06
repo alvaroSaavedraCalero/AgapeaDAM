@@ -314,8 +314,6 @@ namespace AgapeaDAM.Models
                         comandoEjecutar.Parameters.AddWithValue("@idd", nuevaDir.IdDireccion);
                         break;
 
-                    default:
-                        break;
                 }
 
 
