@@ -330,6 +330,8 @@ namespace AgapeaDAM.Controllers
 
                     // actualizo variable de sesion
                     HttpContext.Session.SetString("datosCliente", JsonSerializer.Serialize<Cliente>(cliente));
+
+                    return RedirectToAction("InicioPanel");
                 }
                 else
                 {
@@ -338,13 +340,10 @@ namespace AgapeaDAM.Controllers
                     return RedirectToAction("InicioPanel");
                 }
 
-                return RedirectToAction("InicioPanel");
-
 
             }
             catch (Exception)
             {
-
                 return RedirectToAction("Login");
             }
 

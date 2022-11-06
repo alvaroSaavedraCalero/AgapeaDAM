@@ -310,7 +310,7 @@ namespace AgapeaDAM.Models
 
                     case "borrar":
                         // Eliminamos la direccion correspondiente al idDireccion
-                        comandoEjecutar.CommandText = "delete dbo.Direcciones where IdDireccion=@idd";
+                        comandoEjecutar.CommandText = "delete from dbo.Direcciones where IdDireccion=@idd";
                         comandoEjecutar.Parameters.AddWithValue("@idd", nuevaDir.IdDireccion);
                         break;
 
