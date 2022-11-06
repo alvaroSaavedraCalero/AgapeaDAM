@@ -300,7 +300,10 @@ namespace AgapeaDAM.Controllers
 
                 // si estamos modificando o borrando una direccion, el IdDireccion generado automaticamente lo tengo 
                 // que machacar con el IdDireccion que quiero borrar o modificar, y lo saco del segundo campo del parametro operacion
-                if (new Regex("^(modificar_ | borrar_)").IsMatch(operacion)) { nuevaDireccion.IdDireccion = operacion.Split('_')[1]; }
+                if (new Regex("^(modificar_|borrar_)").IsMatch(operacion))
+                { 
+                    nuevaDireccion.IdDireccion = operacion.Split('_')[1];
+                }
 
                 if (this.__servicioBD.operarDireccion(nuevaDireccion, cliente.IdCliente, operacion.Split('_')[0]))
                 {

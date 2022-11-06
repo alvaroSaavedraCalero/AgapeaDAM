@@ -299,7 +299,7 @@ namespace AgapeaDAM.Models
 
                     case "modificar":
                         // Modificamos la direccion que corresponde al idDireccion
-                        comandoEjecutar.CommandText = "update dbo.Direcciones set Calle = @calle, CP = @cp, Provincia = @cpro, Municipio = @cmun, EsPrincipal = 0, EsFacturacion = 0, Pais = @pais where IdDireccion = @idd";
+                        comandoEjecutar.CommandText = "update dbo.Direcciones set Calle=@calle,CP=@cp,Provincia=@cpro,Municipio=@cmun,EsPrincipal=0,EsFacturacion=0,Pais=@pais where IdDireccion=@idd";
                         comandoEjecutar.Parameters.AddWithValue("@calle", nuevaDir.Calle);
                         comandoEjecutar.Parameters.AddWithValue("@cp", nuevaDir.CP);
                         comandoEjecutar.Parameters.AddWithValue("@cpro", nuevaDir.ProvDirec.CPRO + "-" + nuevaDir.ProvDirec.PRO);
@@ -323,7 +323,6 @@ namespace AgapeaDAM.Models
             }
             catch (Exception)
             {
-
                 return false;
             }
         }
