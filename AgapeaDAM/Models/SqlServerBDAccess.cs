@@ -123,6 +123,7 @@ namespace AgapeaDAM.Models
                         _clienteADevolver.CuentaCliente.Email = _cursorCuenta["Email"].ToString();
                         _clienteADevolver.CuentaCliente.Password = "";
                         _clienteADevolver.CuentaCliente.ImagenAvatar = _cursorCuenta["ImagenAvatar"].ToString();
+                        _clienteADevolver.CuentaCliente.ImagenAvatarBASE64 = _cursorCuenta["ImagenAvatarBASE64"].ToString();
                         _clienteADevolver.CuentaCliente.IdCuenta = _cursorCuenta["IdCuenta"].ToString();
                         _clienteADevolver.CuentaCliente.CuentaActivada = System.Convert.ToBoolean(_cursorCuenta["CuentaActivada"]);
                         _clienteADevolver.IdCliente = _cursorCuenta["IdCliente"].ToString();
@@ -326,6 +327,30 @@ namespace AgapeaDAM.Models
                 return false;
             }
         }
+
+        public bool updateCuentaSubirImagen(string nombreFichero, string contenidoBASE64, String idCuenta)
+        {
+            try
+            {
+                SqlConnection conexion = new SqlConnection(this.CadenaConexionSever);
+                conexion.Open();
+
+                SqlCommand updateCuenta = new SqlCommand("update dbo.Cuentas set ImagenAvatar=@img, ImagenAvatarBASE64=@img64 where IdCuenta=@id", conexion);
+                updateCuenta.Parameters.AddWithValue("@id", idCuenta);
+                updateCuenta.Parameters.AddWithValue("@img", nombreFichero);
+                updateCuenta.Parameters.AddWithValue("@img64", contenidoBASE64);
+
+                int numFilasInsertadas = updateCuenta.ExecuteNonQuery();
+                return numFilasInsertadas == 1;
+            }
+            catch (Exception ex)
+            {
+
+                return false;
+            }
+        }
+
+
         #endregion
 
 

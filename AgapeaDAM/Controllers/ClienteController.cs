@@ -7,6 +7,8 @@ using System.Text.Json;
 
 using System.Text.RegularExpressions;
 
+using System.IO;
+
 namespace AgapeaDAM.Controllers
 {
     public class ClienteController : Controller
@@ -353,15 +355,45 @@ namespace AgapeaDAM.Controllers
 
         }
 
-        /*
-        
-        [HttpPost]
-        public IActionResult InicioPanel(Cliente clienteLogeado)
-        {
 
+
+        [HttpPost]
+        public IActionResult RecibirImagen(String base64, IFormFile imagen)
+        {
+            try
+            {
+                // Almacenar el fichero recibido en el directorio www-root/images/avataresClientes/nombreFichero.ext
+                Cliente? cliente = JsonSerializer.Deserialize<Cliente>(HttpContext.Session.GetString("datosCliente"));
+                if (cliente == null) return Ok(new RespuestaAJAXServer { Codigo = 1, Mensaje = "Sesion caducada, ir al login" });
+                // con objeto dinamico mandamos respuesta, sin generar objeto de la clase RespuestaAJAXServer
+                // if (cliente == null) return Ok(new { codigo = 1, mensaje = "Sesion caducada, ir al login" });
+
+                String nombreFichero = imagen.FileName.Split('/').Last<String>();
+                String nombreFinal = nombreFichero.Split('.')[0] + "_" + cliente.IdCliente + "." + nombreFichero.Split('.')[1];
+                FileStream ficheroAlmacenImagenServer = new FileStream(@"www-root\images\avataresClientes\" + nombreFinal, FileMode.Create);
+
+                imagen.CopyTo(ficheroAlmacenImagenServer);
+
+                // meter el contenido el base 64 y el nombre del fichero en la tabla Cuentas de la BD para ese cliente
+                if (this.__servicioBD.updateCuentaSubirImagen(nombreFinal, base64, cliente.CuentaCliente.IdCuenta))
+                {
+                    return Ok(new RespuestaAJAXServer { Codigo = 0, Mensaje = "Imagen avatar subida correctamente" });
+                }
+                else
+                {
+                    return Ok(new RespuestaAJAXServer { Codigo = 2, Mensaje = "Error interno en el servidor BD a la hora de almacenar en tablas" });
+                }
+
+
+                // y devuelvo un JSON para que lo reciba la peticionAjax lanzada por el cliente... {codigo: xx, mensaje: '....'}
+
+            }
+            catch (Exception ex)
+            {
+                // no se debe mandar nunca como mensaje el error de la expecion
+                return Ok(new RespuestaAJAXServer { Codigo = 3, Mensaje = ex.Message });
+            }
         }
-        
-        */
         #endregion
 
 

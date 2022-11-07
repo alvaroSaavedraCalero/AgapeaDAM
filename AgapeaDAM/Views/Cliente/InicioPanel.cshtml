@@ -45,8 +45,9 @@
                                      id="imagenUsuario"
                                      style="width:200;height:250;" />
                             </a>
-                            
+
                         </div>
+                        <div id="mensajeServer"></div>
                         <button id="botonUploadImage" type="button" class="btn btn-link btn-sm">+ Sube una foto</button>
                     </div>
                     <div class="col-sm-8">
@@ -159,7 +160,7 @@
                                                     @{
                                                         foreach (Provincia unaProv in (List<Provincia>)ViewData["provincias"])
                                                         {
-                                                                <option value="@unaProv.CPRO-@unaProv.PRO">@unaProv.PRO</option>
+                                                                                            <option value="@unaProv.CPRO-@unaProv.PRO">@unaProv.PRO</option>
                                                         }
                                                     }
                                                 </select>
@@ -197,10 +198,11 @@
     // seleccionar imagen avatar usuario y subirla al servidor
 
     let contenido = "";
+    let fichero;
 
-    
+
     document.getElementById('selectorImagen').addEventListener('change', function (ev) {
-        let fichero = ev.target.files[0];
+        fichero = ev.target.files[0];
         console.log(fichero);
 
         let lector = new FileReader();
@@ -216,19 +218,52 @@
         lector.readAsDataURL(fichero);
     });
 
-    document.getElementById('botonUploadImage').addEventListener('click', function(ev){
+    document.getElementById('botonUploadImage').addEventListener('click', function (ev) {
         window.alert('a subir la imagen al server por AJAX');
+
+        // contenido a mandar al servidor : base 64 del fichero y fichero fisico
+        let datos = new FormData();
+        datos.append('base64', contenido);
+        datos.append('imagen', fichero);
+
         let peticionAjax = new XMLHttpRequest();
         peticionAjax.open('POST', 'https://localhost:7281/Cliente/RecibirImagen');
 
-        peticionAjax.addEventListener('readystatechange', function(ev){
+        peticionAjax.addEventListener('readystatechange', function (ev) {
             if (peticionAjax.status == 200 && peticionAjax.readyState == 4) {
-                let respuestaServer = peticionAjax.responseText;
+                let respuestaServer = JSON.parse(peticionAjax.responseText);
                 console.log(respuestaServer);
+
+                switch (respuestaServer.codigo) {
+                    case 0:
+                        // deshabilito boton subir foto y muestro mensaje
+                        document.getElementById('botonUploadImage').setAttribute('disabled', 'true');
+                        let p = document.createElement('p');
+                        p.setAttribute('style', 'color:red;');
+                        p.appendChild(document.createTextNode(respuestaServer.mesaje));
+
+                        document.getElementById('mensajeServer').appendChild(p);
+                        break;
+                    case 1:
+                        // estado de sesion ha expirado, al login
+                        window.location = 'http://localhost:7281/Cliente/Login';
+                        break;
+
+                    default:
+                        let p = document.createElement('p');
+                        p.setAttribute('style', 'color:red;');
+                        p.appendChild(document.createTextNode(respuestaServer.mesaje));
+
+                        document.getElementById('mensajeServer').appendChild(p);
+                        break;
+
+                }
             }
         });
 
-        peticionAjax.send({imgen: contenido});
+        // A veces necesitas especificar la cabecera Content-Type a multipar/form-data
+        // peticionAjax.setRequestHeader('Content-Type', 'multipar/form-data');
+        peticionAjax.send(datos);
     });
 
     //-------------------

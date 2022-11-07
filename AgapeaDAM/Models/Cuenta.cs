@@ -24,7 +24,11 @@ namespace AgapeaDAM.Models
 
         public Boolean CuentaActivada { get; set; } = false;
 
+        // nombre del fichero imagen dentro del directorio www-root/imagen/avataresClientes
         public String? ImagenAvatar { get; set; } = "";
+
+        // contenido en base64 de ese fichero imagen
+        public String? ImagenAvatarBASE64 { get; set; } = "";
         #endregion
 
 
