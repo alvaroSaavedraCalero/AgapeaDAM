@@ -357,6 +357,12 @@ namespace AgapeaDAM.Controllers
 
 
 
+        /// <summary>
+        /// Funcion para controlar la imagen recibida para la imagen Avatar del cliente y almacenarla en www-root
+        /// </summary>
+        /// <param name="base64">La imagen codificada en forma de String en base 64</param>
+        /// <param name="imagen">Toda la informacion de la imagen para operar con ella</param>
+        /// <returns>En cualquier caso, retorna al cliente un objeto de tipo RespuestaAJAXServer con el codigo y el mensaje correspondiente</returns>
         [HttpPost]
         public IActionResult RecibirImagen(String base64, IFormFile imagen)
         {
@@ -368,10 +374,12 @@ namespace AgapeaDAM.Controllers
                 // con objeto dinamico mandamos respuesta, sin generar objeto de la clase RespuestaAJAXServer
                 // if (cliente == null) return Ok(new { codigo = 1, mensaje = "Sesion caducada, ir al login" });
 
+                // Obtenemos el nombre del fichero y lo modificamos para que tenga la Id del cliente
                 String nombreFichero = imagen.FileName.Split('/').Last<String>();
                 String nombreFinal = nombreFichero.Split('.')[0] + "_" + cliente.IdCliente + "." + nombreFichero.Split('.')[1];
                 FileStream ficheroAlmacenImagenServer = new FileStream(@"www-root\images\avataresClientes\" + nombreFinal, FileMode.Create);
-
+                
+                // copiamos la imagen en www-root
                 imagen.CopyTo(ficheroAlmacenImagenServer);
 
                 // meter el contenido el base 64 y el nombre del fichero en la tabla Cuentas de la BD para ese cliente

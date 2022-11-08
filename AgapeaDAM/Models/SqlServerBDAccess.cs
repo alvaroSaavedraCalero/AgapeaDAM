@@ -328,6 +328,13 @@ namespace AgapeaDAM.Models
             }
         }
 
+        /// <summary>
+        /// Funcion para añadir la imagen Avatar del Cliente a la base de datos
+        /// </summary>
+        /// <param name="nombreFichero"></param>
+        /// <param name="contenidoBASE64"></param>
+        /// <param name="idCuenta"></param>
+        /// <returns>Retorna true en caso de que la imagen se haya almacenado de forma correcta</returns>
         public bool updateCuentaSubirImagen(string nombreFichero, string contenidoBASE64, String idCuenta)
         {
             try
