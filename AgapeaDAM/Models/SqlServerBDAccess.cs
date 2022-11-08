@@ -357,6 +357,21 @@ namespace AgapeaDAM.Models
             }
         }
 
+        public bool updateDatosCliente(Cliente datosCliente, String newPassword)
+        {
+            try
+            {
+                SqlConnection conexion = new SqlConnection(this.CadenaConexionSever);
+                conexion.Open();
+
+                SqlCommand updateCliente = new SqlCommand("update dbo.Clientes set nombre=@nom, Apellidos=@apell, Telefono=@tel, FechaNacimiento=@fecna, Descripcion=@desc, Genero=@gen where IdCliente=@idc", conexion);
+            }
+            catch (Exception)
+            {
+
+                return false;
+            }
+        }
 
         #endregion
 

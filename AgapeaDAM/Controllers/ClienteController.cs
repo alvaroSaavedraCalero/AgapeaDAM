@@ -303,7 +303,7 @@ namespace AgapeaDAM.Controllers
                 // si estamos modificando o borrando una direccion, el IdDireccion generado automaticamente lo tengo 
                 // que machacar con el IdDireccion que quiero borrar o modificar, y lo saco del segundo campo del parametro operacion
                 if (new Regex("^(modificar_|borrar_)").IsMatch(operacion))
-                { 
+                {
                     nuevaDireccion.IdDireccion = operacion.Split('_')[1];
                 }
 
@@ -377,10 +377,12 @@ namespace AgapeaDAM.Controllers
                 // Obtenemos el nombre del fichero y lo modificamos para que tenga la Id del cliente
                 String nombreFichero = imagen.FileName.Split('/').Last<String>();
                 String nombreFinal = nombreFichero.Split('.')[0] + "_" + cliente.IdCliente + "." + nombreFichero.Split('.')[1];
-                FileStream ficheroAlmacenImagenServer = new FileStream(@"www-root\images\avataresClientes\" + nombreFinal, FileMode.Create);
-                
+                FileStream ficheroAlmacenImagenServer = new FileStream(@".\wwwroot\images\avataresClientes\" + nombreFinal, FileMode.Create);
+
                 // copiamos la imagen en www-root
                 imagen.CopyTo(ficheroAlmacenImagenServer);
+
+
 
                 // meter el contenido el base 64 y el nombre del fichero en la tabla Cuentas de la BD para ese cliente
                 if (this.__servicioBD.updateCuentaSubirImagen(nombreFinal, base64, cliente.CuentaCliente.IdCuenta))
@@ -401,6 +403,46 @@ namespace AgapeaDAM.Controllers
                 // no se debe mandar nunca como mensaje el error de la expecion
                 return Ok(new RespuestaAJAXServer { Codigo = 3, Mensaje = ex.Message });
             }
+        }
+
+        [HttpPost]
+        public IActionResult updateDatosCliente(Cliente datosClienteForm, [FromForm] String password, [FromForm] String rePassword,
+            [FromForm] String dia, [FromForm] String mes, [FromForm] String anio)
+        {
+            try
+            {
+                // recuperar del estado de sesion el objeto cliente, modificarlo con los datos del cliente que me pasan
+                // almacenarlo en la bd (tabla Clientes) y actualizar el estado de sesion con los nuevos datos del cliente
+                Cliente cliente = JsonSerializer.Deserialize<Cliente>(HttpContext.Session.GetString("datosCliente"));
+
+                if (password != rePassword) throw new Exception("Las constraseñas no coinciden, no se modifico la contraseña. Intentlo de nuevo");
+
+                datosClienteForm.FechaNacimiento = new DateTime(System.Convert.ToInt16(anio), System.Convert.ToInt16(mes), System.Convert.ToInt16(dia));
+
+                if (this.__servicioBD.updateDatosCliente(datosClienteForm, password))
+                {
+                    cliente.FechaNacimiento = datosClienteForm.FechaNacimiento;
+                    cliente.Nombre = datosClienteForm.Nombre;
+                    cliente.Apellidos = datosClienteForm.Apellidos;
+                    cliente.Genero = datosClienteForm.Genero;
+                    cliente.Descripcion = datosClienteForm.Descripcion;
+                    cliente.Telefono = datosClienteForm.Telefono;
+                    HttpContext.Session.SetString("datosCliente", JsonSerializer.Serialize<Cliente>(cliente));
+                } else
+                {
+                    throw new Exception("Error interno en el servidor de BD al intentar actualizar tus datos, intentalo mas tarde");
+                }
+
+                return RedirectToAction("InicioPanel");
+            }
+            catch (Exception ex)
+            {
+                HttpContext.Session.SetString("erroresServer", ex.Message);
+                return RedirectToAction("InicioPanel");
+            }
+
+
+            
         }
         #endregion
 

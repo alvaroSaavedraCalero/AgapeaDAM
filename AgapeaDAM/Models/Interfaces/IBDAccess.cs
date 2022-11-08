@@ -14,5 +14,7 @@
         public Boolean operarDireccion(Direccion nuevaDir, String idCliente, String operacion);
 
         public Boolean updateCuentaSubirImagen(String nombreFichero, String contenidoBASE64, String idCuenta);
+
+        public Boolean updateDatosCliente(Cliente datosCliente, String newPassword);
     }
 }

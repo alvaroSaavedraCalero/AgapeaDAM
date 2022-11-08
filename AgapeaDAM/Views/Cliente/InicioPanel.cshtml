@@ -3,93 +3,110 @@
 <div class="container">
     <div class="row">
         <div class="col">
-            <div class="row">
-                <div class="col">
-                    <div asp-validation-summary="All" class="text-danger"></div>
-                </div>
-            </div>
 
             <h2>Mi perfil</h2>
             <div></div><!--sangria-->
             <div class="alert alert-secondary" data-bs-toggle="collapse" href="#collapseDatos">Datos de perfil</div>
             <div class="collapse" id="collapseDatos">
-                <div class="row">
-                    <div class="col-sm-6">
-                        <div class="row text-muted">Correo electrónico</div>
-                        <div class="row"><input type="text" id="inputEmail" class="input-group-text" style="width:90%" /></div>
-                        <div class="row text-muted">Contraseña</div>
-                        <div class="row"><input type="password" id="inputPass" class="input-group-text" style="width:90%" /></div>
-                        <div class="row text-muted">Nombre</div>
-                        <div class="row"><input type="text" id="inputNombre" class="input-group-text" style="width:90%" /></div>
-
-                    </div>
-
-                    <div class="col-sm-6">
-                        <div class="row text-muted">Teléfono</div>
-                        <div class="row"><input type="text" id="inputTlfn" class="input-group-text" style="width:90%" /></div>
-                        <div class="row text-muted">Repetir la contraseña</div>
-                        <div class="row"><input type="password" id="inputPassRep" class="input-group-text" style="width:90%" /></div>
-                        <div class="row text-muted">Apellidos</div>
-                        <div class="row"><input type="text" id="inputNombre" class="input-group-text" style="width:90% " /></div>
-
-                    </div>
-                </div>
-                <div class="row"><span></span></div>
-                <div class="row">
-                    <div class="col-sm-4">
-                        <div class="text-muted">Foto</div>
-                        <div id="avatarPerfil" class="card" style="width:200px;height:250px; background-color:aliceblue">
-                            <input type="file" id="selectorImagen" accept="image/*" style="visibility:hidden;" />
-                            <a id="linkselectorImagen" onclick="document.getElementById('selectorImagen').dispatchEvent(new MouseEvent('click'))">
-                                <img src="~/images/imagen_usuario_default.PNG"
-                                     id="imagenUsuario"
-                                     style="width:200;height:250;" />
-                            </a>
+                <form method="post" asp-controller="Cliente" asp-action="updateDatosCliente">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="row text-muted">Correo electrónico</div>
+                            <div class="row"><input type="text" id="inputEmail" class="input-group-text" style="width:90%" asp-for="@Model.CuentaCliente.Email" disabled/></div>
+                            <div class="row text-muted">Contraseña</div>
+                            <div class="row"><input type="password" id="inputPass" class="input-group-text" style="width:90%" name="password"/></div>
+                            <div class="row text-muted">Nombre</div>
+                            <div class="row"><input type="text" id="inputNombre" class="input-group-text" style="width:90%" asp-for="@Model.Nombre" /></div>
 
                         </div>
-                        <div id="mensajeServer"></div>
-                        <button id="botonUploadImage" type="button" class="btn btn-link btn-sm">+ Sube una foto</button>
-                    </div>
-                    <div class="col-sm-8">
-                        <div class="row text-muted">Usuario</div>
-                        <div class="row"><input type="text" id="inputUsuario" class="input-group-sm" /></div>
-                        <div class="row text-muted">Genero</div>
-                        <div class="row">
-                            <select class="form-select" aria-label="Elige genero">
-                                <option selected>Elige genero</option>
 
-                                <option value="H">Hombre</option>
-                                <option value="M">Mujer</option>
-                            </select>
+                        <div class="col-sm-6">
+                            <div class="row text-muted">Teléfono</div>
+                            <div class="row"><input type="text" id="inputTlfn" class="input-group-text" style="width:90%" asp-for="@Model.Telefono"/></div>
+                            <div class="row text-muted">Repetir la contraseña</div>
+                            <div class="row"><input type="password" id="inputPassRep" class="input-group-text" style="width:90%" name="rePassword"/></div>
+                            <div class="row text-muted">Apellidos</div>
+                            <div class="row"><input type="text" id="inputApellidos" class="input-group-text" style="width:90% " asp-for="@Model.Apellidos" /></div>
+
                         </div>
-                        <div class="row text-muted">Fecha de nacimiento</div>
-                        <div class="row">
-                            <div class="col-sm-4">
-                                <select name="dia" id="dia" class="form-select">
-                                    <option>Elige día</option>
-
-                                </select>
-                            </div>
-                            <div class="col-sm-4">
-                                <select name="mes" id="mes" class="form-select">
-                                    <option>Elige mes</option>
-
-
-                                </select>
-                            </div>
-                            <div class="col-sm-4">
-                                <select name="mes" id="mes" class="form-select">
-                                    <option value="" selected="">Elige año</option>
-
-                                </select>
-                            </div>
-                        </div>
-                        <div class="row text-muted">Descripcion</div>
-                        <div class="row"><textarea id="textArea"></textarea> </div>
-                        <div class="ro2 align-text-top"><a href=""> Darme de baja</a></div>
-
                     </div>
-                </div>
+                    <div class="row"><span></span></div>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="text-muted">Foto</div>
+                            <div id="avatarPerfil" class="card" style="width:200px;height:250px; background-color:aliceblue">
+                                <input type="file" id="selectorImagen" accept="image/*" style="visibility:hidden;" />
+                                <a id="linkselectorImagen" onclick="document.getElementById('selectorImagen').dispatchEvent(new MouseEvent('click'))">
+                                    <img src="@Model.CuentaCliente.ImagenAvatarBASE64"
+                                         id="imagenUsuario"
+                                         style="width:200;height:250;" />
+                                </a>
+
+                            </div>
+                            <div id="mensajeServer"></div>
+                            <button id="botonUploadImage" type="button" class="btn btn-link btn-sm">+ Sube una foto</button>
+                        </div>
+                        <div class="col-sm-8">
+                            <div class="row text-muted">Usuario</div>
+                            <div class="row"><input type="text" id="inputUsuario" class="input-group-sm" /></div>
+                            <div class="row text-muted">Genero</div>
+                            <div class="row">
+                                <select class="form-select" aria-label="Elige genero" asp-for="@Model.Genero">
+                                    <option selected>Elige genero</option>
+
+                                    <option value="Hombre">Hombre</option>
+                                    <option value="Mujer">Mujer</option>
+                                </select>
+                            </div>
+                            <div class="row text-muted">Fecha de nacimiento</div>
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <select name="dia" id="dia" class="form-select">
+                                        <option value="-1">Elige día</option>
+                                        @for (int i = 0; i <= 31; i++)
+                                        {
+                                            <option value="@i">@i</option>
+                                        }
+
+                                    </select>
+                                </div>
+                                <div class="col-sm-4">
+                                    <select name="mes" id="mes" class="form-select">
+                                        <option value="-1">Elige mes</option>
+                                        
+                                        @foreach (String mes in new List<String> { "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre" })
+                                        {
+                                            <option value="@mes">@mes</option>
+                                        }
+
+                                    </select>
+                                </div>
+                                <div class="col-sm-4">
+                                    <select name="anio" id="anio" class="form-select">
+                                        <option value="-1" selected="">Elige año</option>
+                                        @for (int anio = 1920; anio < DateTime.Now.Year; anio++)
+                                        {
+                                            <option value="@anio">@anio</option>
+                                        }
+
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row text-muted">Descripcion</div>
+                            <div class="row"><textarea id="textArea" asp-for="@Model.Descripcion"></textarea> </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="ro2 align-text-top"><a href=""> Darme de baja</a></div>
+                                </div>
+                                <div class="col-6">
+                                    <button type="submit" class="btn btn-primary btn-sm">Actualiza tus datos</button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </form>
+
             </div>
 
             <div class="alert alert-secondary" data-bs-toggle="collapse" href="#collapseDirecciones">Direcciones</div>
@@ -160,7 +177,7 @@
                                                     @{
                                                         foreach (Provincia unaProv in (List<Provincia>)ViewData["provincias"])
                                                         {
-                                                                                            <option value="@unaProv.CPRO-@unaProv.PRO">@unaProv.PRO</option>
+                                                                <option value="@unaProv.CPRO-@unaProv.PRO">@unaProv.PRO</option>
                                                         }
                                                     }
                                                 </select>
@@ -229,6 +246,7 @@
         let peticionAjax = new XMLHttpRequest();
         peticionAjax.open('POST', 'https://localhost:7281/Cliente/RecibirImagen');
 
+        let p;
         peticionAjax.addEventListener('readystatechange', function (ev) {
             if (peticionAjax.status == 200 && peticionAjax.readyState == 4) {
                 let respuestaServer = JSON.parse(peticionAjax.responseText);
@@ -238,7 +256,7 @@
                     case 0:
                         // deshabilito boton subir foto y muestro mensaje
                         document.getElementById('botonUploadImage').setAttribute('disabled', 'true');
-                        let p = document.createElement('p');
+                        p = document.createElement('p');
                         p.setAttribute('style', 'color:red;');
                         p.appendChild(document.createTextNode(respuestaServer.mesaje));
 
@@ -250,7 +268,7 @@
                         break;
 
                     default:
-                        let p = document.createElement('p');
+                        p = document.createElement('p');
                         p.setAttribute('style', 'color:red;');
                         p.appendChild(document.createTextNode(respuestaServer.mesaje));
 
