@@ -36,7 +36,7 @@
                             <div class="text-muted">Foto</div>
                             <div id="avatarPerfil" class="card" style="width:200px;height:250px; background-color:aliceblue">
                                 <input type="file" id="selectorImagen" accept="image/*" style="visibility:hidden;" />
-                                <a id="linkselectorImagen" onclick="document.getElementById('selectorImagen').dispatchEvent(new MouseEvent('click'))">
+                                <a id="linkselectorImagen" onclick="javascript: document.getElementById('selectorImagen').dispatchEvent(new MouseEvent('click'));">
                                     <img src="@Model.CuentaCliente.ImagenAvatarBASE64"
                                          id="imagenUsuario"
                                          style="width:200;height:250;" />
@@ -48,7 +48,7 @@
                         </div>
                         <div class="col-sm-8">
                             <div class="row text-muted">Usuario</div>
-                            <div class="row"><input type="text" id="inputUsuario" class="input-group-sm" /></div>
+                            <div class="row"><input type="text" id="inputUsuario" class="input-group-sm" asp-for="@Model.CuentaCliente.Login"/></div>
                             <div class="row text-muted">Genero</div>
                             <div class="row">
                                 <select class="form-select" aria-label="Elige genero" asp-for="@Model.Genero">
@@ -73,18 +73,21 @@
                                 <div class="col-sm-4">
                                     <select name="mes" id="mes" class="form-select">
                                         <option value="-1">Elige mes</option>
-                                        
-                                        @foreach (String mes in new List<String> { "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre" })
-                                        {
-                                            <option value="@mes">@mes</option>
+                                        @{
+                                            int numMes = 1;
+                                            foreach (String mes in new List<String> { "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+                                                        "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre" })
+                                            {
+                                                <option value="@numMes-@mes">@mes</option>
+                                                numMes++;
+                                            }
                                         }
-
                                     </select>
                                 </div>
                                 <div class="col-sm-4">
                                     <select name="anio" id="anio" class="form-select">
                                         <option value="-1" selected="">Elige año</option>
-                                        @for (int anio = 1920; anio < DateTime.Now.Year; anio++)
+                                        @for (int anio = 1920; anio <= DateTime.Now.Year; anio++)
                                         {
                                             <option value="@anio">@anio</option>
                                         }
@@ -140,13 +143,11 @@
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
+                                <h5 class="modal-title" id="staticBackdropLabel">Nueva Direccion</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
                                 <div class="container">
-                                    <div class="row"><h3><strong>Nueva Direccion</strong></h3></div>
-                                    <hr>
                                     <div class="row">
                                         <p>Si desea que enviemos el pedido a una dirección distinta de la de facturación, modifique los campos a </p>
                                         <p>continuación según proceda.</p>
@@ -177,7 +178,7 @@
                                                     @{
                                                         foreach (Provincia unaProv in (List<Provincia>)ViewData["provincias"])
                                                         {
-                                                                <option value="@unaProv.CPRO-@unaProv.PRO">@unaProv.PRO</option>
+                                                                    <option value="@unaProv.CPRO-@unaProv.PRO">@unaProv.PRO</option>
                                                         }
                                                     }
                                                 </select>
@@ -203,8 +204,6 @@
                         </div>
                     </div>
                 </div>
-
-
             </div>
         </div>
     </div>
@@ -216,6 +215,7 @@
 
     let contenido = "";
     let fichero;
+
 
 
     document.getElementById('selectorImagen').addEventListener('change', function (ev) {

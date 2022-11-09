@@ -53,7 +53,7 @@ namespace AgapeaDAM.Models
                 int __numfilasinsertcli = __insertCli.ExecuteNonQuery(); //metodo .executenonquery para iNSERTS, UPDATES, DELETES
                 if (__numfilasinsertcli == 1)
                 {
-                    SqlCommand __insertCu = new SqlCommand("INSERT INTO dbo.Cuentas VALUES(@id,@log,@em,@pass,@img,@idc,@cueAct)", __conexionBD);
+                    SqlCommand __insertCu = new SqlCommand("INSERT INTO dbo.Cuentas VALUES(@id,@log,@em,@pass,@img,@idc,@cueAct, @img64)", __conexionBD);
                     __insertCu.Parameters.AddWithValue("@id", clienteAguardar.CuentaCliente.IdCuenta);
                     __insertCu.Parameters.AddWithValue("@log", clienteAguardar.CuentaCliente.Login);
                     __insertCu.Parameters.AddWithValue("@em", clienteAguardar.CuentaCliente.Email);
@@ -66,6 +66,7 @@ namespace AgapeaDAM.Models
                     __insertCu.Parameters.AddWithValue("@img", clienteAguardar.CuentaCliente.ImagenAvatar);
                     __insertCu.Parameters.AddWithValue("@idc", clienteAguardar.IdCliente);
                     __insertCu.Parameters.AddWithValue("@cueAct", clienteAguardar.CuentaCliente.CuentaActivada);
+                    __insertCu.Parameters.AddWithValue("@img64", clienteAguardar.CuentaCliente.ImagenAvatarBASE64);
 
 
                     int __numfilasinsertcu = __insertCu.ExecuteNonQuery();
@@ -357,6 +358,12 @@ namespace AgapeaDAM.Models
             }
         }
 
+        /// <summary>
+        /// Funcion para actualizar los datos del cliente
+        /// </summary>
+        /// <param name="datosCliente"></param>
+        /// <param name="newPassword"></param>
+        /// <returns>Retorna true en caso de que todo funcione correctamente</returns>
         public bool updateDatosCliente(Cliente datosCliente, String newPassword)
         {
             try
@@ -364,7 +371,16 @@ namespace AgapeaDAM.Models
                 SqlConnection conexion = new SqlConnection(this.CadenaConexionSever);
                 conexion.Open();
 
-                SqlCommand updateCliente = new SqlCommand("update dbo.Clientes set nombre=@nom, Apellidos=@apell, Telefono=@tel, FechaNacimiento=@fecna, Descripcion=@desc, Genero=@gen where IdCliente=@idc", conexion);
+                SqlCommand updateCliente = new SqlCommand("update dbo.Clientes set nombre=@nom, Apellidos=@apell, " +
+                    "Telefono=@tel, FechaNacimiento=@fecna, Descripcion=@desc, Genero=@gen where IdCliente=@idc", conexion);
+                updateCliente.Parameters.AddWithValue("@nom", datosCliente.Nombre);
+                updateCliente.Parameters.AddWithValue("@apell", datosCliente.Apellidos);
+                updateCliente.Parameters.AddWithValue("@tel", datosCliente.Telefono);
+                updateCliente.Parameters.AddWithValue("@fecna", datosCliente.FechaNacimiento);
+                updateCliente.Parameters.AddWithValue("@desc", datosCliente.Descripcion);
+                updateCliente.Parameters.AddWithValue("@gen", datosCliente.Genero);
+                updateCliente.Parameters.AddWithValue("@idc", datosCliente.IdCliente);
+                return true;
             }
             catch (Exception)
             {
