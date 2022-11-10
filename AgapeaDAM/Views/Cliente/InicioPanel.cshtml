@@ -246,7 +246,7 @@
         let peticionAjax = new XMLHttpRequest();
         peticionAjax.open('POST', 'https://localhost:7281/Cliente/RecibirImagen');
 
-        let p;
+
         peticionAjax.addEventListener('readystatechange', function (ev) {
             if (peticionAjax.status == 200 && peticionAjax.readyState == 4) {
                 let respuestaServer = JSON.parse(peticionAjax.responseText);
@@ -256,7 +256,7 @@
                     case 0:
                         // deshabilito boton subir foto y muestro mensaje
                         document.getElementById('botonUploadImage').setAttribute('disabled', 'true');
-                        p = document.createElement('p');
+                        let p = document.createElement('p');
                         p.setAttribute('style', 'color:red;');
                         p.appendChild(document.createTextNode(respuestaServer.mesaje));
 
@@ -268,7 +268,7 @@
                         break;
 
                     default:
-                        p = document.createElement('p');
+                        let p = document.createElement('p');
                         p.setAttribute('style', 'color:red;');
                         p.appendChild(document.createTextNode(respuestaServer.mesaje));
 
