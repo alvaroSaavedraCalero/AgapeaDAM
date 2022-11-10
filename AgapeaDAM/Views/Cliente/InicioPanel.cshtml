@@ -252,13 +252,13 @@
                 let respuestaServer = JSON.parse(peticionAjax.responseText);
                 console.log(respuestaServer);
 
-                switch (respuestaServer.codigo) {
+                switch (respuestaServer.Codigo) {
                     case 0:
                         // deshabilito boton subir foto y muestro mensaje
                         document.getElementById('botonUploadImage').setAttribute('disabled', 'true');
                         let p = document.createElement('p');
                         p.setAttribute('style', 'color:red;');
-                        p.appendChild(document.createTextNode(respuestaServer.mesaje));
+                        p.appendChild(document.createTextNode(respuestaServer.Mesaje));
 
                         document.getElementById('mensajeServer').appendChild(p);
                         break;
@@ -270,7 +270,7 @@
                     default:
                         let p = document.createElement('p');
                         p.setAttribute('style', 'color:red;');
-                        p.appendChild(document.createTextNode(respuestaServer.mesaje));
+                        p.appendChild(document.createTextNode(respuestaServer.Mesaje));
 
                         document.getElementById('mensajeServer').appendChild(p);
                         break;

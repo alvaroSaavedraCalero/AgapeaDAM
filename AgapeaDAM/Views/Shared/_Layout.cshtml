@@ -6,44 +6,114 @@
     <title>@ViewData["Title"] - AgapeaDAM</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/AgapeaDAM.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/AgapeaDAW.styles.css" asp-append-version="true" />
+    <style>
+        .bg-negro {
+            background-color: #2c2c2c;
+        }
+    </style>
+
+    <!-- jquewry libreria descomprimida-->
+    <script src="https://code.jquery.com/jquery-3.6.1.js" integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI=" crossorigin="anonymous"></script>
+
+
+    <!-- font awesome -->
+    <script src="https://kit.fontawesome.com/cb407d7525.js" crossorigin="anonymous"></script>
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">AgapeaDAM</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
+    <header id="header">
+        <div class="container-lg m-0 p-0">
+            <div class="col-12 vw-100">
+                <div class="row bg-negro m-0 p-0">
+                    <div class="row">
+                        <!-- botones de contacto y login/acceso a panel de usuario si esta usuario logueado -->
+                        <div class="col-9"></div>
+                        <div class="col-3">
+
+                            <!-- link acceso al panel Cliente o login en funcion si se le pasa desde el controlador variable de sesion a la vista...-->
+                            <div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
+                                <a href="#" class="btn btn-negro btn-sm">
+                                    <img src="~/images/botonMINIcontacto.png">
+                                </a>
+
+                                <a asp-controller="Cliente" asp-action="Login" class="btn br-negro btn-sm">
+                                    <img src="~/images/botonMINIlogin.png">
+                                </a>
+                                
+                            </div>
+                        </div>
+                    </div>
                 </div>
+                <nav class="row bg-light vw-100 m-0 border border-bottom-2">
+                    <div class="row p-3 container me-0 ms-5">
+                        <!-- Mi cuenta -->
+                        <div class="col-4 d-flex align-content-center justify-content-center ps-5">
+                            <a class="p-2" asp-controller="Tienda" asp-action="RecuperaLibros">
+                                <img src="~/images/agapea-logo.png" alt="" width="auto" height="40" />
+                            </a>
+                        </div>
+                        <div class="col-4">
+                            <form asp-controller="Tienda" asp-action="BuscarLibros" method="post">
+                                <div class="bg-gray border border-5 border w-75 h-100 d-flex flex-row">
+                                    <div class="p-1 flex-fill">
+                                        <input class="border-0 w-100 h-100" type="text" name="cajatext" placeholder="Buscar por libro, autor, ISBN..."></input>
+                                    </div>
+                                    <div class="bg-primary p-2 border border-5 border-end-0 border-top-0 border-bottom-0">
+                                        <a id="botonBuscar" onclick="javascript:document.forms[0].submit()"><img src="~/images/lupa.png" width="auto" height="20" /></a>
+                                    </div>
+                                </div>
+
+                            </form>
+                        </div>
+                        <div class="col-4 p-0">
+                            <div class="w-50 h-100">
+                                <!-- mini carrito -->
+                                <a asp-action="MostrarPedido" asp-controller="Pedido" class="h-100 bg-white border border-dark border-1 btn btn-light">
+                                    <img src="~/images/boton_mini_carrito.png" />
+                                    <span class="text-dark badge badge-danger  ps-1 pe-1"> <small>Total:</small> <span class="text-end" id="precioCarrito" style="width: 110px; font-size: 1.2em">0.00 €</span></span>
+
+                                    <img class="align-content-lg-center" src="~/images/boton_flecha_minicarrito.png" />
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </nav>
             </div>
-        </nav>
+        </div>
     </header>
+
     <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
+        <div class="row">
+
+                <div class="col-3 border border-bottom-0 border-top-0 border-start-0 border-end-1 border-dark">
+                    <!--panel de categorias raices-->
+                    <h6 class="text-dark mt-4 ms-3">CATEGORÍAS</h6>
+
+                        <div class="list-group">
+ 
+                            <a href="#" class="list-group-item list-group-item-action border border-end-0 border-start-0 text-dark">...una categoria raiz...</a>
+  
+                        </div>
+                </div>
+
+                <div class="col-9 mt-4">
+                    @RenderBody()
+                </div>
+
+        </div>
     </div>
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2022 - AgapeaDAM - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2022 - AgapeaDAW - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+    <!--<script src="~/lib/jquery/dist/jquery.min.js"></script>-->
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
+
+

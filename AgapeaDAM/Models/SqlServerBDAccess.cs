@@ -2,6 +2,7 @@
 using System.Data.SqlClient;
 
 using BCrypt.Net; //paquete con clases para cifrar/comprobar passwords
+using Microsoft.AspNetCore.Razor.Language.Extensions;
 
 // Lo mejor es que todas las funciones sean async
 
@@ -380,7 +381,23 @@ namespace AgapeaDAM.Models
                 updateCliente.Parameters.AddWithValue("@desc", datosCliente.Descripcion);
                 updateCliente.Parameters.AddWithValue("@gen", datosCliente.Genero);
                 updateCliente.Parameters.AddWithValue("@idc", datosCliente.IdCliente);
-                return true;
+
+                int numFilasUpdate = updateCliente.ExecuteNonQuery();
+                if (numFilasUpdate == 1)
+                {
+                    if (! String.IsNullOrEmpty(newPassword))
+                    {
+                        SqlCommand updateCuenta = new SqlCommand("update dbo.Cuentas set Password=@pass where IdCuenta=@idc", conexion);
+
+                        String hashpass = BCrypt.Net.BCrypt.HashPassword(newPassword);
+                        updateCuenta.Parameters.AddWithValue("@pass", hashpass);
+                        updateCuenta.Parameters.AddWithValue("@idc", datosCliente.CuentaCliente.IdCuenta);
+
+                        int numFilasUpdateCuenta = updateCuenta.ExecuteNonQuery();
+
+                        return numFilasUpdateCuenta == 1;
+                    } else { return false; }
+                } else { return false; }
             }
             catch (Exception)
             {
