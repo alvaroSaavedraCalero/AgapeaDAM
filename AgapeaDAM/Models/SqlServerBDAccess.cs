@@ -22,6 +22,8 @@ namespace AgapeaDAM.Models
 
         #region ...metodos de la clase de acceso a datos contra sqlserver....
 
+        #region ... metodos panel cliente ...
+
         /// <summary>
         /// Funcion para registrar un cliente en la base de datos
         /// </summary>
@@ -365,15 +367,15 @@ namespace AgapeaDAM.Models
         /// <param name="datosCliente"></param>
         /// <param name="newPassword"></param>
         /// <returns>Retorna true en caso de que todo funcione correctamente</returns>
-        public bool updateDatosCliente(Cliente datosCliente, String newPassword)
+        public bool updateDatosCliente(Cliente datosCliente, String newPassword, String oldLogin)
         {
             try
             {
                 SqlConnection conexion = new SqlConnection(this.CadenaConexionSever);
                 conexion.Open();
 
-                SqlCommand updateCliente = new SqlCommand("update dbo.Clientes set nombre=@nom, Apellidos=@apell, " +
-                    "Telefono=@tel, FechaNacimiento=@fecna, Descripcion=@desc, Genero=@gen where IdCliente=@idc", conexion);
+                SqlCommand updateCliente = new SqlCommand("update dbo.Clientes set Nombre=@nom, Apellidos=@apell, " +
+                    "Telefono=@tel, FechaNacimiento=@fecna, Genero=@gen, Descripcion=@desc where IdCliente=@idc", conexion);
                 updateCliente.Parameters.AddWithValue("@nom", datosCliente.Nombre);
                 updateCliente.Parameters.AddWithValue("@apell", datosCliente.Apellidos);
                 updateCliente.Parameters.AddWithValue("@tel", datosCliente.Telefono);
@@ -382,10 +384,15 @@ namespace AgapeaDAM.Models
                 updateCliente.Parameters.AddWithValue("@gen", datosCliente.Genero);
                 updateCliente.Parameters.AddWithValue("@idc", datosCliente.IdCliente);
 
-                int numFilasUpdate = updateCliente.ExecuteNonQuery();
-                if (numFilasUpdate == 1)
+                int numFilasUpdateCliente = updateCliente.ExecuteNonQuery();
+
+                Boolean resultadoUpdateCuentasPassword = false;
+                Boolean resultadoUpdateCuentasLogin = false;
+
+                if (numFilasUpdateCliente == 1)
                 {
-                    if (! String.IsNullOrEmpty(newPassword))
+                    // Mofificamos las Password si esta rellena en el Form
+                    if (!String.IsNullOrEmpty(newPassword))
                     {
                         SqlCommand updateCuenta = new SqlCommand("update dbo.Cuentas set Password=@pass where IdCuenta=@idc", conexion);
 
@@ -393,11 +400,27 @@ namespace AgapeaDAM.Models
                         updateCuenta.Parameters.AddWithValue("@pass", hashpass);
                         updateCuenta.Parameters.AddWithValue("@idc", datosCliente.CuentaCliente.IdCuenta);
 
-                        int numFilasUpdateCuenta = updateCuenta.ExecuteNonQuery();
+                        int numFilasUpdateCuentaPass = updateCuenta.ExecuteNonQuery();
 
-                        return numFilasUpdateCuenta == 1;
-                    } else { return false; }
-                } else { return false; }
+                        resultadoUpdateCuentasPassword = numFilasUpdateCuentaPass == 1;
+                    }
+
+                    // Modifico el login si ha variado con respecto al viejo
+                    if (datosCliente.CuentaCliente.Login != oldLogin)
+                    {
+                        SqlCommand updateCuentaLogin = new SqlCommand("update dbo.Cuentas set Login=@log where IdCuenta=@idc", conexion);
+                        updateCuentaLogin.Parameters.AddWithValue("@log", datosCliente.CuentaCliente.Login);
+                        updateCuentaLogin.Parameters.AddWithValue("@idc", datosCliente.CuentaCliente.IdCuenta);
+
+                        int numFilasUpdateCuentaLogin = updateCuentaLogin.ExecuteNonQuery();
+
+                        resultadoUpdateCuentasLogin = numFilasUpdateCuentaLogin == 1;
+                    }
+
+                    return resultadoUpdateCuentasPassword && resultadoUpdateCuentasLogin;
+                    
+                }
+                else { return false; }
             }
             catch (Exception)
             {
@@ -405,6 +428,45 @@ namespace AgapeaDAM.Models
                 return false;
             }
         }
+
+        #endregion
+
+        #region ... metodos Tienda ...
+
+        public List<Categoria> devolverCategoriasRaiz()
+        {
+            try
+            {
+                List<Categoria> listaCategorias = new List<Categoria>();
+
+                SqlConnection conexion = new SqlConnection(this.CadenaConexionSever);
+                conexion.Open();
+
+                SqlCommand selectCatRaiz = new SqlCommand("select * from dbo.Categorias where IdCategoria like '_' or IdCategoria like '__'", conexion);
+                SqlDataReader cursor = selectCatRaiz.ExecuteReader();
+
+                if (cursor.HasRows)
+                {
+                    while (cursor.Read())
+                    {
+                        listaCategorias.Add(new Categoria(cursor["IdCategoria"].ToString(), cursor["NombreCategoria"].ToString()));
+                    }
+
+                    cursor.Close();
+                    cursor.Dispose();
+
+                    return listaCategorias;
+                } else { return null; }
+
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
 
         #endregion
 

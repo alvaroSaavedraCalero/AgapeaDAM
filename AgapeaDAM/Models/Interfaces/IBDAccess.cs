@@ -15,6 +15,8 @@
 
         public Boolean updateCuentaSubirImagen(String nombreFichero, String contenidoBASE64, String idCuenta);
 
-        public Boolean updateDatosCliente(Cliente datosCliente, String newPassword);
+        public Boolean updateDatosCliente(Cliente datosCliente, String newPassword, String oldLogin);
+
+        public List<Categoria> devolverCategoriasRaiz();
     }
 }

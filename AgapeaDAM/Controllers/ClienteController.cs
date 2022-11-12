@@ -370,13 +370,15 @@ namespace AgapeaDAM.Controllers
             {
                 // Almacenar el fichero recibido en el directorio www-root/images/avataresClientes/nombreFichero.ext
                 Cliente? cliente = JsonSerializer.Deserialize<Cliente>(HttpContext.Session.GetString("datosCliente"));
-                if (cliente == null) return Ok(new RespuestaAJAXServer { Codigo = 1, Mensaje = "Sesion caducada, ir al login" });
+
                 // con objeto dinamico mandamos respuesta, sin generar objeto de la clase RespuestaAJAXServer
-                // if (cliente == null) return Ok(new { codigo = 1, mensaje = "Sesion caducada, ir al login" });
+                if (cliente == null) return Ok(new  { codigo = 1, mensaje = "Sesion caducada, ir al login" });
 
                 // Obtenemos el nombre del fichero y lo modificamos para que tenga la Id del cliente
                 String nombreFichero = imagen.FileName.Split('/').Last<String>();
                 String nombreFinal = nombreFichero.Split('.')[0] + "_" + cliente.IdCliente + "." + nombreFichero.Split('.')[1];
+
+                // Creamos el fichero
                 FileStream ficheroAlmacenImagenServer = new FileStream(@".\wwwroot\images\avataresClientes\" + nombreFinal, FileMode.Create);
 
                 // copiamos la imagen en www-root
@@ -387,11 +389,11 @@ namespace AgapeaDAM.Controllers
                 // meter el contenido el base 64 y el nombre del fichero en la tabla Cuentas de la BD para ese cliente
                 if (this.__servicioBD.updateCuentaSubirImagen(nombreFinal, base64, cliente.CuentaCliente.IdCuenta))
                 {
-                    return Ok(new RespuestaAJAXServer { Codigo = 0, Mensaje = "Imagen avatar subida correctamente" });
+                    return Ok(new  { codigo = 0, mensaje = "Imagen avatar subida correctamente" });
                 }
                 else
                 {
-                    return Ok(new RespuestaAJAXServer { Codigo = 2, Mensaje = "Error interno en el servidor BD a la hora de almacenar en tablas" });
+                    return Ok(new  { codigo = 2, mensaje = "Error interno en el servidor BD a la hora de almacenar en tablas" });
                 }
 
 
@@ -419,7 +421,7 @@ namespace AgapeaDAM.Controllers
 
                 datosClienteForm.FechaNacimiento = new DateTime(System.Convert.ToInt16(anio), System.Convert.ToInt16(mes), System.Convert.ToInt16(dia));
 
-                if (this.__servicioBD.updateDatosCliente(datosClienteForm, password))
+                if (this.__servicioBD.updateDatosCliente(datosClienteForm, password, cliente.CuentaCliente.Login))
                 {
                     cliente.FechaNacimiento = datosClienteForm.FechaNacimiento;
                     cliente.Nombre = datosClienteForm.Nombre;

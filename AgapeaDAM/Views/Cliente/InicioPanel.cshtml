@@ -12,9 +12,9 @@
                     <div class="row">
                         <div class="col-sm-6">
                             <div class="row text-muted">Correo electrónico</div>
-                            <div class="row"><input type="text" id="inputEmail" class="input-group-text" style="width:90%" asp-for="@Model.CuentaCliente.Email" disabled/></div>
+                            <div class="row"><input type="text" id="inputEmail" class="input-group-text" style="width:90%" asp-for="@Model.CuentaCliente.Email" disabled /></div>
                             <div class="row text-muted">Contraseña</div>
-                            <div class="row"><input type="password" id="inputPass" class="input-group-text" style="width:90%" name="password"/></div>
+                            <div class="row"><input type="password" id="inputPass" class="input-group-text" style="width:90%" name="password" /></div>
                             <div class="row text-muted">Nombre</div>
                             <div class="row"><input type="text" id="inputNombre" class="input-group-text" style="width:90%" asp-for="@Model.Nombre" /></div>
 
@@ -22,9 +22,9 @@
 
                         <div class="col-sm-6">
                             <div class="row text-muted">Teléfono</div>
-                            <div class="row"><input type="text" id="inputTlfn" class="input-group-text" style="width:90%" asp-for="@Model.Telefono"/></div>
+                            <div class="row"><input type="text" id="inputTlfn" class="input-group-text" style="width:90%" asp-for="@Model.Telefono" /></div>
                             <div class="row text-muted">Repetir la contraseña</div>
-                            <div class="row"><input type="password" id="inputPassRep" class="input-group-text" style="width:90%" name="rePassword"/></div>
+                            <div class="row"><input type="password" id="inputPassRep" class="input-group-text" style="width:90%" name="rePassword" /></div>
                             <div class="row text-muted">Apellidos</div>
                             <div class="row"><input type="text" id="inputApellidos" class="input-group-text" style="width:90% " asp-for="@Model.Apellidos" /></div>
 
@@ -48,7 +48,7 @@
                         </div>
                         <div class="col-sm-8">
                             <div class="row text-muted">Usuario</div>
-                            <div class="row"><input type="text" id="inputUsuario" class="input-group-sm" asp-for="@Model.CuentaCliente.Login"/></div>
+                            <div class="row"><input type="text" id="inputUsuario" class="input-group-sm" asp-for="@Model.CuentaCliente.Login" /></div>
                             <div class="row text-muted">Genero</div>
                             <div class="row">
                                 <select class="form-select" aria-label="Elige genero" asp-for="@Model.Genero">
@@ -63,9 +63,9 @@
                                 <div class="col-sm-4">
                                     <select name="dia" id="dia" class="form-select">
                                         <option value="-1">Elige día</option>
-                                        @for (int i = 0; i <= 31; i++)
+                                        @for (int i = 1; i <= 31; i++)
                                         {
-                                            <option value="@i">@i</option>
+                                            <option value="@i" selected="@(Model.FechaNacimiento.Value.Day == 1 ? true : false)">@i</option>
                                         }
 
                                     </select>
@@ -76,9 +76,9 @@
                                         @{
                                             int numMes = 1;
                                             foreach (String mes in new List<String> { "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
-                                                        "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre" })
+                                        "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre" })
                                             {
-                                                <option value="@numMes-@mes">@mes</option>
+                                                <option value="@numMes-@mes" selected="@(Model.FechaNacimiento.Value.Month == numMes ? true : false)">@mes</option>
                                                 numMes++;
                                             }
                                         }
@@ -89,7 +89,7 @@
                                         <option value="-1" selected="">Elige año</option>
                                         @for (int anio = 1920; anio <= DateTime.Now.Year; anio++)
                                         {
-                                            <option value="@anio">@anio</option>
+                                            <option value="@anio" selected="@(Model.FechaNacimiento.Value.Year == anio ? true : false)">@anio</option>
                                         }
 
                                     </select>
@@ -128,7 +128,9 @@
                     <!--Lista de direcciones ya creadas del cliente-->
                     @foreach (Direccion unaDirec in Model.MisDireciones)
                     {
-                        <partial name="_VistaParcialMiniDireccion" model="unaDirec" />
+                        <div class="row">
+                            <partial name="_VistaParcialMiniDireccion" model="unaDirec" />
+                        </div>
                     }
                 </div>
 
@@ -178,7 +180,7 @@
                                                     @{
                                                         foreach (Provincia unaProv in (List<Provincia>)ViewData["provincias"])
                                                         {
-                                                                    <option value="@unaProv.CPRO-@unaProv.PRO">@unaProv.PRO</option>
+                                                            <option value="@unaProv.CPRO-@unaProv.PRO">@unaProv.PRO</option>
                                                         }
                                                     }
                                                 </select>
@@ -252,13 +254,13 @@
                 let respuestaServer = JSON.parse(peticionAjax.responseText);
                 console.log(respuestaServer);
 
-                switch (respuestaServer.Codigo) {
+                switch (respuestaServer.codigo) {
                     case 0:
                         // deshabilito boton subir foto y muestro mensaje
                         document.getElementById('botonUploadImage').setAttribute('disabled', 'true');
                         let p = document.createElement('p');
                         p.setAttribute('style', 'color:red;');
-                        p.appendChild(document.createTextNode(respuestaServer.Mesaje));
+                        p.appendChild(document.createTextNode(respuestaServer.mesaje));
 
                         document.getElementById('mensajeServer').appendChild(p);
                         break;
@@ -270,7 +272,7 @@
                     default:
                         let p = document.createElement('p');
                         p.setAttribute('style', 'color:red;');
-                        p.appendChild(document.createTextNode(respuestaServer.Mesaje));
+                        p.appendChild(document.createTextNode(respuestaServer.mesaje));
 
                         document.getElementById('mensajeServer').appendChild(p);
                         break;

@@ -1,4 +1,12 @@
-﻿<!DOCTYPE html>
+﻿@using AgapeaDAM.Models.Interfaces;
+@inject IBDAccess servicioBD;
+
+@{
+    List<Categoria> categoriasRaiz = this.servicioBD.devolverCategoriasRaiz();
+}
+
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -39,7 +47,7 @@
                                 <a asp-controller="Cliente" asp-action="Login" class="btn br-negro btn-sm">
                                     <img src="~/images/botonMINIlogin.png">
                                 </a>
-                                
+
                             </div>
                         </div>
                     </div>
@@ -85,20 +93,25 @@
     <div class="container">
         <div class="row">
 
-                <div class="col-3 border border-bottom-0 border-top-0 border-start-0 border-end-1 border-dark">
-                    <!--panel de categorias raices-->
-                    <h6 class="text-dark mt-4 ms-3">CATEGORÍAS</h6>
+            <div class="col-3 border border-bottom-0 border-top-0 border-start-0 border-end-1 border-dark">
+                <!--panel de categorias raices-->
+                <h6 class="text-dark mt-4 ms-3">CATEGORÍAS</h6>
 
-                        <div class="list-group">
- 
-                            <a href="#" class="list-group-item list-group-item-action border border-end-0 border-start-0 text-dark">...una categoria raiz...</a>
-  
-                        </div>
-                </div>
+                <div class="list-group">
 
-                <div class="col-9 mt-4">
-                    @RenderBody()
+                    @{
+                        foreach (Categoria item in categoriasRaiz)
+                        {
+                            <a href="#" class="list-group-item list-group-item-action border border-end-0 border-start-0 text-dark">@item.NombreCategoria</a>
+                        }
+                    }
+
                 </div>
+            </div>
+
+            <div class="col-9 mt-4">
+                @RenderBody() <!-- aqui iria la vista originada por el metodo de accion del controlador cargado por el modulo de enrutamiento-->
+            </div>
 
         </div>
     </div>
