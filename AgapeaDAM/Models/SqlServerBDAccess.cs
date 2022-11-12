@@ -369,17 +369,18 @@ namespace AgapeaDAM.Models
         /// <returns>Retorna true en caso de que todo funcione correctamente</returns>
         public bool updateDatosCliente(Cliente datosCliente, String newPassword, String oldLogin)
         {
+            // Preguntar al profe por como funcionan los retornos de esta funcion
             try
             {
                 SqlConnection conexion = new SqlConnection(this.CadenaConexionSever);
                 conexion.Open();
 
-                SqlCommand updateCliente = new SqlCommand(@"update dbo.Clientes set Nombre=@nom, Apellidos=@apell, Telefono=@tel, FechaNacimiento=@fecna, Genero=@gen, Descripcion=@desc where IdCliente=@idc", conexion);
+                SqlCommand updateCliente = new SqlCommand("update dbo.Clientes set Nombre=@nom, Apellidos=@apell, Telefono=@tel, FechaNacimiento=@fecna, Genero=@gen, Descripcion=@desc where IdCliente=@idc", conexion);
                 updateCliente.Parameters.AddWithValue("@nom", datosCliente.Nombre);
                 updateCliente.Parameters.AddWithValue("@apell", datosCliente.Apellidos);
                 updateCliente.Parameters.AddWithValue("@tel", datosCliente.Telefono);
                 updateCliente.Parameters.AddWithValue("@fecna", datosCliente.FechaNacimiento);
-                // salta un error diciendo que @desc no esta parametrizado
+                // si la descripcion es null, dara una excepcion
                 updateCliente.Parameters.AddWithValue("@desc", datosCliente.Descripcion);
                 updateCliente.Parameters.AddWithValue("@gen", datosCliente.Genero);
                 updateCliente.Parameters.AddWithValue("@idc", datosCliente.IdCliente);
@@ -417,7 +418,7 @@ namespace AgapeaDAM.Models
                         resultadoUpdateCuentasLogin = numFilasUpdateCuentaLogin == 1;
                     }
 
-                    return resultadoUpdateCuentasPassword && resultadoUpdateCuentasLogin;
+                    return true;
                     
                 }
                 else { return false; }
