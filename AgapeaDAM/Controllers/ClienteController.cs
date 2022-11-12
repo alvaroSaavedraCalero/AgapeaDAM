@@ -419,7 +419,7 @@ namespace AgapeaDAM.Controllers
 
                 if (password != rePassword) throw new Exception("Las constraseñas no coinciden, no se modifico la contraseña. Intentlo de nuevo");
 
-                datosClienteForm.FechaNacimiento = new DateTime(System.Convert.ToInt16(anio), System.Convert.ToInt16(mes), System.Convert.ToInt16(dia));
+                datosClienteForm.FechaNacimiento = new DateTime(System.Convert.ToInt16(anio), System.Convert.ToInt16(mes.Split('-')[0]), System.Convert.ToInt16(dia));
 
                 if (this.__servicioBD.updateDatosCliente(datosClienteForm, password, cliente.CuentaCliente.Login))
                 {

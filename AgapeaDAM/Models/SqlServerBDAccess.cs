@@ -374,12 +374,12 @@ namespace AgapeaDAM.Models
                 SqlConnection conexion = new SqlConnection(this.CadenaConexionSever);
                 conexion.Open();
 
-                SqlCommand updateCliente = new SqlCommand("update dbo.Clientes set Nombre=@nom, Apellidos=@apell, " +
-                    "Telefono=@tel, FechaNacimiento=@fecna, Genero=@gen, Descripcion=@desc where IdCliente=@idc", conexion);
+                SqlCommand updateCliente = new SqlCommand(@"update dbo.Clientes set Nombre=@nom, Apellidos=@apell, Telefono=@tel, FechaNacimiento=@fecna, Genero=@gen, Descripcion=@desc where IdCliente=@idc", conexion);
                 updateCliente.Parameters.AddWithValue("@nom", datosCliente.Nombre);
                 updateCliente.Parameters.AddWithValue("@apell", datosCliente.Apellidos);
                 updateCliente.Parameters.AddWithValue("@tel", datosCliente.Telefono);
                 updateCliente.Parameters.AddWithValue("@fecna", datosCliente.FechaNacimiento);
+                // salta un error diciendo que @desc no esta parametrizado
                 updateCliente.Parameters.AddWithValue("@desc", datosCliente.Descripcion);
                 updateCliente.Parameters.AddWithValue("@gen", datosCliente.Genero);
                 updateCliente.Parameters.AddWithValue("@idc", datosCliente.IdCliente);
