@@ -372,7 +372,7 @@ namespace AgapeaDAM.Controllers
                 Cliente? cliente = JsonSerializer.Deserialize<Cliente>(HttpContext.Session.GetString("datosCliente"));
 
                 // con objeto dinamico mandamos respuesta, sin generar objeto de la clase RespuestaAJAXServer
-                if (cliente == null) return Ok(new  { codigo = 1, mensaje = "Sesion caducada, ir al login" });
+                if (cliente == null) return Ok(new { codigo = 1, mensaje = "Sesion caducada, ir al login" });
 
                 // Obtenemos el nombre del fichero y lo modificamos para que tenga la Id del cliente
                 String nombreFichero = imagen.FileName.Split('/').Last<String>();
@@ -389,11 +389,11 @@ namespace AgapeaDAM.Controllers
                 // meter el contenido el base 64 y el nombre del fichero en la tabla Cuentas de la BD para ese cliente
                 if (this.__servicioBD.updateCuentaSubirImagen(nombreFinal, base64, cliente.CuentaCliente.IdCuenta))
                 {
-                    return Ok(new  { codigo = 0, mensaje = "Imagen avatar subida correctamente" });
+                    return Ok(new { codigo = 0, mensaje = "Imagen avatar subida correctamente" });
                 }
                 else
                 {
-                    return Ok(new  { codigo = 2, mensaje = "Error interno en el servidor BD a la hora de almacenar en tablas" });
+                    return Ok(new { codigo = 2, mensaje = "Error interno en el servidor BD a la hora de almacenar en tablas" });
                 }
 
 
@@ -430,7 +430,8 @@ namespace AgapeaDAM.Controllers
                     cliente.Descripcion = datosClienteForm.Descripcion;
                     cliente.Telefono = datosClienteForm.Telefono;
                     HttpContext.Session.SetString("datosCliente", JsonSerializer.Serialize<Cliente>(cliente));
-                } else
+                }
+                else
                 {
                     throw new Exception("Error interno en el servidor de BD al intentar actualizar tus datos, intentalo mas tarde");
                 }
@@ -444,7 +445,7 @@ namespace AgapeaDAM.Controllers
             }
 
 
-            
+
         }
         #endregion
 
