@@ -65,7 +65,7 @@
                                         <option value="-1">Elige día</option>
                                         @for (int i = 1; i <= 31; i++)
                                         {
-                                            <option value="@i" selected="@(Model.FechaNacimiento.Value.Day == 1 ? true : false)">@i</option>
+                                            <option value="@i" selected="@(Model.FechaNacimiento.Value.Day == i ? true : false)">@i</option>
                                         }
 
                                     </select>

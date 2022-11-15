@@ -17,6 +17,16 @@
 
         public Boolean updateDatosCliente(Cliente datosCliente, String newPassword, String oldLogin);
 
+        #region metodos de Tienda
+
         public List<Categoria> devolverCategoriasRaiz();
+
+        public List<Libro> recuperaLibros(String idCategoria);
+
+        #endregion
+
+
+
+
     }
 }

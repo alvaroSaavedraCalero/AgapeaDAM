@@ -164,7 +164,8 @@ namespace AgapeaDAM.Controllers
                         HttpContext.Session.SetString("datosCliente", JsonSerializer.Serialize<Cliente>(_clienteLogged));
 
                         //redirecciono al panel del usuario...
-                        return RedirectToAction("InicioPanel");
+                        //return RedirectToAction("InicioPanel");
+                        return RedirectToRoute("panelCliente", new {controller="Cliente", action="InicioPanel"});
                     }
                     else
                     {
@@ -421,6 +422,10 @@ namespace AgapeaDAM.Controllers
 
                 datosClienteForm.FechaNacimiento = new DateTime(System.Convert.ToInt16(anio), System.Convert.ToInt16(mes.Split('-')[0]), System.Convert.ToInt16(dia));
 
+                // para que no coja los valores del cliente nuevo que nos retorna la vista
+                datosClienteForm.IdCliente = cliente.IdCliente;
+                datosClienteForm.CuentaCliente.IdCuenta = cliente.CuentaCliente.IdCuenta;
+
                 if (this.__servicioBD.updateDatosCliente(datosClienteForm, password, cliente.CuentaCliente.Login))
                 {
                     cliente.FechaNacimiento = datosClienteForm.FechaNacimiento;
@@ -436,12 +441,13 @@ namespace AgapeaDAM.Controllers
                     throw new Exception("Error interno en el servidor de BD al intentar actualizar tus datos, intentalo mas tarde");
                 }
 
-                return RedirectToAction("InicioPanel");
+                //return RedirectToAction("InicioPanel");
+                return RedirectToRoute("panelCliente", new { controller = "Cliente", action = "InicioPanel" });
             }
             catch (Exception ex)
             {
                 HttpContext.Session.SetString("erroresServer", ex.Message);
-                return RedirectToAction("InicioPanel");
+                return RedirectToRoute("panelCliente", new { controller = "Cliente", action = "InicioPanel" });
             }
 
 

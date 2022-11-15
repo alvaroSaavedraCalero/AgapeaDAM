@@ -94,19 +94,47 @@
         <div class="row">
 
             <div class="col-3 border border-bottom-0 border-top-0 border-start-0 border-end-1 border-dark">
-                <!--panel de categorias raices-->
-                <h6 class="text-dark mt-4 ms-3">CATEGORÍAS</h6>
+                <!--en la funcion de la url que ponga el cliente muestro el panel de categorias, el panel de cliente o ninguno-->
+                <!--Recuperamos el estado de sesion (HttpContext del controlador), pero como estamos en la vista usamos Context-->
+                @if (Context.Request.Path.ToString().Contains("/Tienda") || System.Text.RegularExpressions.Regex.IsMatch("^/?$", Context.Request.Path.ToString()))
+                {
+                    <!--panel de categorias raices-->
+                    <h6 class="text-dark mt-4 ms-3">CATEGORÍAS</h6>
+                    <!--Usando el servicio  de acceso a datos, tendria que recuperar las categorias raiz y en el bucle mostrarlas-->
+                    <div class="list-group">
 
-                <div class="list-group">
+                        @{
+                            foreach (Categoria item in categoriasRaiz)
+                            {
 
-                    @{
-                        foreach (Categoria item in categoriasRaiz)
-                        {
-                            <a href="#" class="list-group-item list-group-item-action border border-end-0 border-start-0 text-dark">@item.NombreCategoria</a>
+                                <a asp-asp-controller="Tienda"
+                       asp-action="recuperaLibros"
+                       asp-asp-all-route-data="@(new Dictionary<String, String>{{"id", item.IdCategoria}})"
+                       class="list-group-item list-group-item-action border border-end-0 border-start-0 text-dark">@item.NombreCategoria</a>
+                            }
                         }
-                    }
 
-                </div>
+                    </div>
+                }
+                else if (Context.Request.Path.ToString().Contains("/Cliente/Panel"))
+                {
+                    <!--panel de opciones del dashboard del cliente-->
+                    <h6 class="text-dark mt-4 ms-3">PANEL PERSONAL DEL CLIENTE</h6>
+                    <div class="list-group">
+
+                        @{
+                            foreach (String item in new List<String> { "Inicio Panel", "Mis Compras", "Mis Opiniones", "Mis Listas"})
+                            {
+
+                                <a href="https://localhost:7281/Cliente/Panel/@item.Replace(" ", "")"
+                       class="list-group-item list-group-item-action border border-end-0 border-start-0 text-dark">@item</a>
+                            }
+                        }
+
+                    </div>
+                }
+
+
             </div>
 
             <div class="col-9 mt-4">

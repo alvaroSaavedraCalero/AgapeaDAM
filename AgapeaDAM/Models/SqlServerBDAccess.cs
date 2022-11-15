@@ -369,6 +369,7 @@ namespace AgapeaDAM.Models
         /// <returns>Retorna true en caso de que todo funcione correctamente</returns>
         public bool updateDatosCliente(Cliente datosCliente, String newPassword, String oldLogin)
         {
+            if (datosCliente.Descripcion == null) datosCliente.Descripcion = "";
             // Preguntar al profe por como funcionan los retornos de esta funcion
             try
             {
@@ -464,6 +465,11 @@ namespace AgapeaDAM.Models
             {
                 return null;
             }
+        }
+
+        public List<Libro> recuperaLibros(String idCategoria)
+        {
+
         }
 
         #endregion

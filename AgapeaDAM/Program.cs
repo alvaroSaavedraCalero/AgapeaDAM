@@ -66,5 +66,11 @@ app.MapControllerRoute(
                                                         // cliente en navegador:   https://localhost:Xxxx/                 <===== si lo cumple segmento-1=Home, segmento-2=Index
                                                         // cliente en navegador:   https://localhost:Xxxx/Tienda/MostrarLibro/12331412  <===== si lo cumple segmento-1=Tienda, segmento-2=MostrarLibro, segemento-3, id=1233412
 
+//-----------Ruta de 4 segmentos para el panel del cliente, nos facilita la tarea a la hora de mostrar las opciones en el LAYOUT ---
+app.MapControllerRoute(
+    name: "panelCliente",
+    pattern: "{controller=Cliente}/Panel/{action=InicioPanel}/{id?}" // <-- patron de busqueda contra la url del cliente
+    );
+
 //-----------------------------------------------------------------------------------------------------------
 app.Run();
