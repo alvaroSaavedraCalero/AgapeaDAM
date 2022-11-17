@@ -435,6 +435,10 @@ namespace AgapeaDAM.Models
 
         #region ... metodos Tienda ...
 
+        /// <summary>
+        /// Funcion que recupera las categorias de la base de datos
+        /// </summary>
+        /// <returns>Una lista con las categorias recuperadas</returns>
         public List<Categoria> devolverCategoriasRaiz()
         {
             try
@@ -467,6 +471,11 @@ namespace AgapeaDAM.Models
             }
         }
 
+        /// <summary>
+        /// Funcion para recuperar los libros de la base de datos
+        /// </summary>
+        /// <param name="idCategoria">El id de cada libro</param>
+        /// <returns>Una lista con los libros que vamos a recuperar</returns>
         public List<Libro> recuperaLibros(String idCategoria)
         {
             try
