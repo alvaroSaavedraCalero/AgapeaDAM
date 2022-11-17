@@ -38,6 +38,9 @@ namespace AgapeaDAM.Models
         //public Dictionary<String,Direccion> MisDirecciones { get; set; }
 
         public List<Pedido> MisPedidos { get; set; }
+
+        public Pedido PedidoActual { get; set; } = new Pedido();
+
         #endregion
 
 

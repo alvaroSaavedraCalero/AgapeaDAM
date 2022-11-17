@@ -1,0 +1,40 @@
+﻿<!--Mini vista para representar los datos de un objeto Libro, con su imagen en miniatura, titulo y un boton de comprar-->
+@model Libro
+
+
+<div class="mb-3" style="max-width: 540px;" id="cardLibro-@Model.ISBN13">
+    <div class="row g-0">
+        <!--Columna con imagen libro y boton comprar-->
+        <div class="col-md-4 text-center" style="height: 170px">
+            <div class="w-100" style="height: 80%">
+                <a asp-controller="Tienda" asp-action="MostrarDetallesLibro" 
+                asp-all-route-data="@(new Dictionary<String,String>{{"isbn13", Model.ISBN13},{"titulo", Model.Titulo}})">
+                    <img src="@Model.ImagenLibroBase64" class="img-fluid rounded-start rounded-end" alt="...">
+                </a>
+            </div>
+            <a class="btn btn-primary btn-sm" id="btnComprar-@Model.ISBN13" style="visibility: hidden;"
+               asp-controller="Pedido" asp-action="AddLibroPedido"
+               asp-all-route-data="@(new Dictionary<String,String>{{"id", Model.ISBN13} })">Comprar</a>
+        </div>
+        <!--columna con detalles del libro: Titulo, autores, etc-->
+        <div class="col-md-8">
+            <div class="ms-3">
+                <h6 class="card-title" style="height: 50px">
+                    <a class="text-decoration-none"
+                       asp-controller="Tienda" asp-action="MostrarDetallesLibro"
+                       asp-all-route-data="@(new Dictionary<String,String>{{"isbn13", Model.ISBN13},{"Titulo",Model.Titulo }})">@Model.Titulo</a>
+                </h6>
+                <div class="card-text">@Model.Autores</div>
+                <div class="card-text">@Model.Editorial</div>
+                <div class="card-text"><small class="text-muted">@Model.NumeroPaginas  páginas</small></div>
+                <div class="card-text"><strong>@Model.Precio €</strong></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    document.querySelectorAll('div[id^="cardLibro-"]')
+
+</script>

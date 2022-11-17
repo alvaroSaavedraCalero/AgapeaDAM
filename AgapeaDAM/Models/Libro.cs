@@ -17,7 +17,7 @@
         public String ISBN10 { get; set; }
         public String ISBN13 { get; set; }
         public String Resumen { get; set; }
-        public decimal Precio { get; set; }
+        public Decimal Precio { get; set; }
 
         #endregion
 

@@ -405,7 +405,8 @@ namespace AgapeaDAM.Models
                         int numFilasUpdateCuentaPass = updateCuenta.ExecuteNonQuery();
 
                         resultadoUpdateCuentasPassword = numFilasUpdateCuentaPass == 1;
-                    } else { resultadoUpdateCuentasPassword = true; }
+                    }
+                    else { resultadoUpdateCuentasPassword = true; }
 
                     // Modifico el login si ha variado con respecto al viejo
                     if (datosCliente.CuentaCliente.Login != oldLogin)
@@ -417,10 +418,11 @@ namespace AgapeaDAM.Models
                         int numFilasUpdateCuentaLogin = updateCuentaLogin.ExecuteNonQuery();
 
                         resultadoUpdateCuentasLogin = numFilasUpdateCuentaLogin == 1;
-                    } else { resultadoUpdateCuentasLogin= true; }
+                    }
+                    else { resultadoUpdateCuentasLogin = true; }
 
                     return resultadoUpdateCuentasPassword && resultadoUpdateCuentasLogin;
-                    
+
                 }
                 else { return false; }
             }
@@ -462,7 +464,8 @@ namespace AgapeaDAM.Models
                     cursor.Dispose();
 
                     return listaCategorias;
-                } else { return null; }
+                }
+                else { return null; }
 
             }
             catch (Exception ex)
@@ -480,11 +483,11 @@ namespace AgapeaDAM.Models
         {
             try
             {
-                List<Libro> listaLibros= new List<Libro>();
+                List<Libro> listaLibros = new List<Libro>();
                 SqlConnection conexion = new SqlConnection(this.CadenaConexionSever);
                 conexion.Open();
 
-                SqlCommand selectLibro = new SqlCommand("select * from dbo.Libros where IdCategoria=@idc", conexion);
+                SqlCommand selectLibro = new SqlCommand("select * from dbo.Libros where IdCategoria like @idc + '%' ", conexion);
                 selectLibro.Parameters.AddWithValue("@idc", idCategoria);
 
                 SqlDataReader cursor = selectLibro.ExecuteReader();
@@ -507,7 +510,7 @@ namespace AgapeaDAM.Models
                             ISBN10 = cursor["ISBN10"].ToString(),
                             ISBN13 = cursor["ISBN13"].ToString(),
                             Resumen = cursor["Resumen"].ToString(),
-                            Precio = System.Convert.ToInt16(cursor["Precio"])
+                            Precio = System.Convert.ToDecimal(cursor["Precio"])
 
                         };
                         listaLibros.Add(libro);
@@ -516,7 +519,55 @@ namespace AgapeaDAM.Models
                     cursor.Close();
                     cursor.Dispose();
                     return listaLibros;
-                } else { return null; }
+                }
+                else { return null; }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public Libro recuperarLibroPorISBN13(string idISBN13)
+        {
+            try
+            {
+                Libro _libro = new Libro();
+                SqlConnection conexion = new SqlConnection(this.CadenaConexionSever);
+
+                conexion.Open();
+
+                SqlCommand selectLibro = new SqlCommand("select * from dbo.Libros where ISBN13=@idc", conexion);
+                selectLibro.Parameters.AddWithValue("@idc", idISBN13);
+
+                SqlDataReader cursor = selectLibro.ExecuteReader();
+                if (cursor.HasRows)
+                {
+                    while (cursor.Read())
+                    {
+
+                        _libro.IdCategoria = cursor["IdCategoria"].ToString();
+                        _libro.ImagenLibro = cursor["ImagenLibro"].ToString();
+                        _libro.ImagenLibroBase64 = cursor["ImagenLibroBASE64"].ToString();
+                        _libro.Titulo = cursor["Titulo"].ToString();
+                        _libro.Editorial = cursor["Editorial"].ToString();
+                        _libro.Autores = cursor["Autores"].ToString();
+                        _libro.Edicion = cursor["Edicion"].ToString();
+                        _libro.NumeroPaginas = System.Convert.ToInt16(cursor["NumeroPaginas"]);
+                        _libro.Dimensiones = cursor["Dimensiones"].ToString();
+                        _libro.Idioma = cursor["Idioma"].ToString();
+                        _libro.ISBN10 = cursor["ISBN10"].ToString();
+                        _libro.ISBN13 = cursor["ISBN13"].ToString();
+                        _libro.Resumen = cursor["Resumen"].ToString();
+                        _libro.Precio = System.Convert.ToDecimal(cursor["Precio"]);
+
+                    }
+
+                    cursor.Close();
+                    cursor.Dispose();
+                    return _libro;
+                }
+                else { return null; }
             }
             catch (Exception ex)
             {

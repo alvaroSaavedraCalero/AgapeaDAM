@@ -6,7 +6,7 @@
         
         //libro  y cantidad de un elemento del pedido
         public Libro LibroItem { get; set; }
-        public int CatidadItem { get; set; }
+        public int CantidadItem { get; set; }
 
         #endregion
 

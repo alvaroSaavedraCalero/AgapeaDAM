@@ -1,2 +1,25 @@
 ﻿
-<h1>Aqui van los libros de la categoria</h1>
+@model List<Libro>
+
+    <div class="container">
+    @if (Model.Count != 0)
+    {
+        <div class="row">
+            @foreach (Libro item in Model)
+            {
+                <div class="col-4">
+                    <partial name="_VistaMiniLibro" model="item">
+                </div>
+            }
+        </div>
+    } 
+    else
+    {
+        <div class="row">
+            <div class="col">
+                <p>No se han encontrado LIBROS de esa categoria... Intentalo de nuevo</p>
+            </div>
+        </div>
+    }
+</div>
+

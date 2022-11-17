@@ -23,6 +23,8 @@
 
         public List<Libro> recuperaLibros(String idCategoria);
 
+        public Libro recuperarLibroPorISBN13(String idISBN13);
+
         #endregion
 
 
