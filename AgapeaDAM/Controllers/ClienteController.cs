@@ -18,8 +18,6 @@ namespace AgapeaDAM.Controllers
         private IBDAccess __servicioBD; //<---- variable donde voy a almacenar el servicio de acceso a datos inyectado en el constructor
         private IClienteEmail clienteEmail;
 
-        #endregion
-
         /*
          para solicitar al modulo de inyeccion de dependencias del servidor un servicio, se invoca en el constructor
          */
@@ -29,6 +27,10 @@ namespace AgapeaDAM.Controllers
             this.clienteEmail = servicioEmail;
 
         }
+
+        #endregion
+
+
 
 
         #region ....metodos clase cliente-controller....
