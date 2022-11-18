@@ -106,11 +106,10 @@
                         @{
                             foreach (Categoria item in categoriasRaiz)
                             {
-
                                 <a asp-asp-controller="Tienda"
-                       asp-action="recuperaLibros"
-                       asp-asp-all-route-data="@(new Dictionary<String, String>{{"id", item.IdCategoria}})"
-                       class="list-group-item list-group-item-action border border-end-0 border-start-0 text-dark">@item.NombreCategoria</a>
+                                asp-action="RecuperaLibros"
+                                asp-asp-all-route-data="@(new Dictionary<String, String>{{"id", item.IdCategoria}})"
+                                class="list-group-item list-group-item-action border border-end-0 border-start-0 text-dark">@item.NombreCategoria</a>
                             }
                         }
 

@@ -9,7 +9,7 @@
         public List<ItemPedido> ItemsPedido { get; set; }
         public Decimal SubTotal { get => this.calculaSubTotal(); }
         public Decimal GastosEnvio { get; set; } = 0;
-        public Decimal Total { get => this.SubTotal + this.GastosEnvio }
+        public Decimal Total { get => this.SubTotal + this.GastosEnvio; }
         public String IdDireccionEnvio { get; set; } = "";
         public String IdDireccionFacturacion { get; set; } = "";
         public DateTime FechaPedido { get; set; } = DateTime.Now;
