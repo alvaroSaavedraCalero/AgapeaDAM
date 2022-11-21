@@ -59,7 +59,7 @@ app.UseAuthorization(); //5º modulo middleware
 //------------------------------- lista de defincion de endpoints para el modulo de enrutamiento ------------
 app.MapControllerRoute(
     name: "default", //<----clave q id al endPoint en la lista de rutas del modulo de enrutamiento
-    pattern: "{controller=Home}/{action=Index}/{id?}"); //<-----patron de busqueda contra la url del cliente
+    pattern: "{controller=Tienda}/{action=RecuperaLibros}/{id?}"); //<-----patron de busqueda contra la url del cliente
                                                         //----------------  -------------  -----
                                                         //   segmento-1        segmento-2   segmento-3
                                                         // cliente en navegador:   https://localhost:Xxxx/Cliente/Registro <===== si lo cumple segmento-1=Cliente, segmento-2=Registro

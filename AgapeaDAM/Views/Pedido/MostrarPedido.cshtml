@@ -1,0 +1,74 @@
+﻿
+
+@model Cliente
+
+<div class="container">
+    <div class="row">
+        <!-- columna para las direcciones de envio y pago por tarjeta o paypal-->
+        <div class="col-8">
+
+        </div>
+
+        <!--columna para los elementos del pedido actual-->
+        <div class="col-4">
+            <div class="container">
+                <div class="row">
+                    <div class="col">
+                        <h5><strong>Resumen de la cesta</strong></h5>
+                    </div>
+                </div>
+                @foreach (ItemPedido item in Model.PedidoActual.ItemsPedido)
+                {
+                    <div class="row">
+                        <partial name="_VistaElementoPedido" model="item"/>
+                    </div>
+                }
+
+                <hr />
+                <div class="row">
+                    <div class="col-10">
+                        <p><strong>Subtotal: </strong></p>
+                    </div>
+                    <div class="col-2">
+                        <p style="color: red">@Model.PedidoActual.SubTotal €</p>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-10">
+                        <p><strong>Gastos de envio y gestión: </strong></p>
+                    </div>
+                    <div class="col-2">
+                        <p style="color: red">@Model.PedidoActual.GastosEnvio €</p>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-10">
+                        <p><strong>Total a pagar: </strong></p>
+                    </div>
+                    <div class="col-2">
+                        <p style="color: red">@Model.PedidoActual.Total €</p>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <small>El pedido de entrega es de <span style="color: forestgreen">de 24 a 48 horas</span></small>
+                </div>
+
+                <div class="row">
+                    <div class="col-6">
+                        <a asp-asp-controller="Tienda" asp-action="RecuperaLibros" class="btn btn-outline-primary">
+                            <i class="fa-solid fa-book"></i>
+                            Seguir comprando</a>
+                    </div>
+
+                    <div class="col-6">
+                        <a href="#" class="btn btn-primary"> <i class="fa-solid fa-truck-fast"></i> Finalizar pedido</a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

@@ -29,7 +29,7 @@
             Decimal subtotal = 0;
             this.ItemsPedido.ForEach(
                 (ItemPedido item) => subtotal += item.LibroItem.Precio * item.CantidadItem
-                );
+                ) ; 
             return subtotal;
         }
 

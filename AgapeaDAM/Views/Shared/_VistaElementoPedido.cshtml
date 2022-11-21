@@ -1,0 +1,40 @@
+﻿@model ItemPedido
+<table class="table table-borderless">
+    <tr>
+        <td rowspan="2"><img src="@Model.LibroItem.ImagenLibroBase64" style="width:40px;" /></td>
+        <td><label><small>@Model.LibroItem.Titulo</small></label></td>
+        <td>
+            <!-- boton eliminar libro X-->
+            <a asp-controller="Pedido"
+               asp-action="eliminarLibroPedido"
+               asp-all-route-data="@(new Dictionary<string,string>{ {"id", Model.LibroItem.ISBN13} })"
+               class="btn btn-light">
+                <strong>X</strong>
+            </a>
+        </td>
+    </tr>
+
+    <tr>
+        <td>
+            <!-- boton +, label cantidad, boton - y precio -->
+            <a asp-controller="Pedido"
+               asp-action="restarCantidadLibro"
+               asp-all-route-data="@(new Dictionary<string,string>{ {"id", Model.LibroItem.ISBN13} })"
+               class="btn btn-primary btn-sm"> - </a>
+
+            <label><small>@Model.CantidadItem</small></label>
+
+            <a asp-controller="Pedido"
+               asp-action="sumarCantidadLibro"
+               asp-all-route-data="@(new Dictionary<string,string>{ {"id", Model.LibroItem.ISBN13} })"
+               class="btn btn-primary btn-sm"> + </a>
+
+            <label><small>x</small> <span style="color:red"><small>@Model.LibroItem.Precio €</small></span></label>
+        </td>
+
+        <td>
+            <!-- subtotal del libro, cantidad por precio del libro pintado -->
+            <label><small><span style="color:red">@(Model.LibroItem.Precio * Model.CantidadItem) €</span></small></label>
+        </td>
+    </tr>
+</table>

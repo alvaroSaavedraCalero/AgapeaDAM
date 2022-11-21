@@ -1,8 +1,13 @@
 ﻿@using AgapeaDAM.Models.Interfaces;
+@using System.Text.Json;
 @inject IBDAccess servicioBD;
 
 @{
     List<Categoria> categoriasRaiz = this.servicioBD.devolverCategoriasRaiz();
+
+    String? jsonCliente = Context.Session.GetString("datosCliente");
+
+    Cliente? cliente = !String.IsNullOrEmpty(jsonCliente) ? JsonSerializer.Deserialize<Cliente>(jsonCliente) : null;
 }
 
 
@@ -26,7 +31,7 @@
 
 
     <!-- font awesome -->
-    <script src="https://kit.fontawesome.com/cb407d7525.js" crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/2be1129cd2.js" crossorigin="anonymous"></script>
 </head>
 <body>
     <header id="header">
@@ -44,9 +49,18 @@
                                     <img src="~/images/botonMINIcontacto.png">
                                 </a>
 
-                                <a asp-controller="Cliente" asp-action="Login" class="btn br-negro btn-sm">
-                                    <img src="~/images/botonMINIlogin.png">
-                                </a>
+                                <!-- si variable se sesion cliente no es null, sustituyo boton de login por email para ir al panel -->
+                                @if (cliente != null)
+                                {
+                                    <a asp-route="panelCliente" 
+                                    asp-all-route-data="@(new Dictionary<String, String>{{"controller", "Cliente"}, {"action", "InicioPanel"}})"
+                                    class="btn btn-sm text-white">@cliente.CuentaCliente.Email</a>
+                                } else
+                                {
+                                    <a asp-controller="Cliente" asp-action="Login" class="btn br-negro btn-sm">
+                                        <img src="~/images/botonMINIlogin.png">
+                                    </a>
+                                }
 
                             </div>
                         </div>
@@ -93,52 +107,66 @@
     <div class="container">
         <div class="row">
 
-            <div class="col-3 border border-bottom-0 border-top-0 border-start-0 border-end-1 border-dark">
-                <!--en la funcion de la url que ponga el cliente muestro el panel de categorias, el panel de cliente o ninguno-->
-                <!--Recuperamos el estado de sesion (HttpContext del controlador), pero como estamos en la vista usamos Context-->
-                @if (Context.Request.Path.ToString().Contains("/Tienda") || System.Text.RegularExpressions.Regex.IsMatch("^/?$", Context.Request.Path.ToString()))
-                {
-                    <!--panel de categorias raices-->
-                    <h6 class="text-dark mt-4 ms-3">CATEGORÍAS</h6>
-                    <!--Usando el servicio  de acceso a datos, tendria que recuperar las categorias raiz y en el bucle mostrarlas-->
-                    <div class="list-group">
-
-                        @{
-                            foreach (Categoria item in categoriasRaiz)
+            <!-- en rutas /Pedido/... o en /Cliente/Registro o Cliente/login no se muestra ningun panel -->
+            @if (System.Text.RegularExpressions.Regex.IsMatch("^(/Pedido|/Cliente/(Login|Registro))", Context.Request.Path.ToString()))
+            {
+                <div class="col-12 mt-4">
+                    @RenderBody()
+                </div>
+            }
+            else
+            {
+                <div class="col-3 border border-bottom-0 border-top-0 border-start-0 border-end-1 border-dark">
+                    <!--en la funcion de la url que ponga el cliente muestro el panel de categorias, el panel de cliente o ninguno-->
+                    <!--Recuperamos el estado de sesion (HttpContext del controlador), pero como estamos en la vista usamos Context-->
+                    <!-- EN FUNCION DE LA URL QUE PONGA EL CLIENTE MUESTRO EL PANEL DE CATEGORIAS, EL PANEL DEL CLIENTE O NINGUNO-->
+                    @if (Context.Request.Path.ToString().Contains("/Tienda") || System.Text.RegularExpressions.Regex.IsMatch("^/?$", Context.Request.Path.ToString()))
+                    {
+                        <!--panel de categorias raices-->
+                        <h6 class="text-dark mt-4 ms-3">CATEGORÍAS</h6>
+                        <!-- usando el servicio de acceso a datos, tendria q recuperar las categorias raiz y en un bucle mostralas-->
+                        <div class="list-group">
+                            @foreach (Categoria item in categoriasRaiz)
                             {
-                                <a asp-asp-controller="Tienda"
-                                asp-action="RecuperaLibros"
-                                asp-asp-all-route-data="@(new Dictionary<String, String>{{"id", item.IdCategoria}})"
-                                class="list-group-item list-group-item-action border border-end-0 border-start-0 text-dark">@item.NombreCategoria</a>
+                                <a asp-controller="Tienda"
+                       asp-action="RecuperaLibros"
+                       asp-all-route-data="@(new Dictionary<String,String>{ {"id", item.IdCategoria} })"
+                       class="list-group-item list-group-item-action border border-end-0 border-start-0 text-dark">
+                                    @item.NombreCategoria
+                                </a>
+
                             }
-                        }
 
-                    </div>
-                }
-                else if (Context.Request.Path.ToString().Contains("/Cliente/Panel"))
-                {
-                    <!--panel de opciones del dashboard del cliente-->
-                    <h6 class="text-dark mt-4 ms-3">PANEL PERSONAL DEL CLIENTE</h6>
-                    <div class="list-group">
+                        </div>
 
-                        @{
-                            foreach (String item in new List<String> { "Inicio Panel", "Mis Compras", "Mis Opiniones", "Mis Listas"})
-                            {
+                    }
+                    else if (Context.Request.Path.ToString().Contains("/Cliente/Panel"))
+                    {
+                        <!--panel de opciones del dashboard del cliente-->
+                        <h6 class="text-dark mt-4 ms-3">PANEL PERSONAL DEL CLIENTE</h6>
+                        <div class="list-group">
 
-                                <a href="https://localhost:7281/Cliente/Panel/@item.Replace(" ", "")"
-                       class="list-group-item list-group-item-action border border-end-0 border-start-0 text-dark">@item</a>
+                            @{
+                                foreach (String item in new List<String> { "Inicio Panel", "Mis Compras", "Mis Opiniones", "Mis Listas" })
+                                {
+
+                                    <a href="https://localhost:7281/Cliente/Panel/@item.Replace(" ", "")"
+                           class="list-group-item list-group-item-action border border-end-0 border-start-0 text-dark">@item</a>
+                                }
                             }
-                        }
 
-                    </div>
-                }
+                        </div>
+                    }
 
 
-            </div>
+                </div>
 
-            <div class="col-9 mt-4">
-                @RenderBody() <!-- aqui iria la vista originada por el metodo de accion del controlador cargado por el modulo de enrutamiento-->
-            </div>
+                <div class="col-9 mt-4">
+                    @RenderBody() <!-- aqui iria la vista originada por el metodo de accion del controlador cargado por el modulo de enrutamiento-->
+                </div>
+            }
+
+
 
         </div>
     </div>

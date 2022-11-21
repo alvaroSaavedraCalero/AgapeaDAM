@@ -62,7 +62,41 @@ namespace AgapeaDAM.Controllers
         [HttpGet]
         public IActionResult MostrarPedido()
         {
-            return View();
+            try
+            {
+                Cliente cliente = JsonSerializer.Deserialize<Cliente>(HttpContext.Session.GetString("datosCliente"));
+                return View(cliente);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        [HttpGet]
+        public IActionResult eliminarLibroPedido(String id)
+        {
+            // en el parametro id va el libro a eliminar...
+            // recupero de la variable de sesion el objeto cliente, obtengo el pedido actual <-- Elementos del pedido
+            // busco el elemento cuyo libro tenga ese isbn y lo borro
+            // Despues actualizo la variable de sesion y redirijo a MostrarPedido
+
+            try
+            {
+                Cliente cliente = JsonSerializer.Deserialize<Cliente>(HttpContext.Session.GetString("datosCliente"));
+
+                int posEliminar = cliente.PedidoActual.ItemsPedido.FindIndex( (ItemPedido item)=> item.LibroItem.ISBN13 == id );
+                if (posEliminar != -1) cliente.PedidoActual.ItemsPedido.RemoveAt(posEliminar);
+
+                HttpContext.Session.SetString("datosCliente", JsonSerializer.Serialize<Cliente>(cliente));
+                return RedirectToAction("MostrarPedido");
+
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
         }
 
         #endregion
