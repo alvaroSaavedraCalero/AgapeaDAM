@@ -4,10 +4,10 @@
         <td rowspan="2"><img src="@Model.LibroItem.ImagenLibroBase64" style="width:40px;" /></td>
         <td><label><small>@Model.LibroItem.Titulo</small></label></td>
         <td>
-            <!-- boton eliminar libro X-->
+            <!-- boton eliminar libro X  asp-action="eliminarLibroPedido" -->
             <a asp-controller="Pedido"
-               asp-action="eliminarLibroPedido"
-               asp-all-route-data="@(new Dictionary<string,string>{ {"id", Model.LibroItem.ISBN13} })"
+               asp-action="operarCantidad"
+               asp-all-route-data="@(new Dictionary<string,string>{ {"id", Model.LibroItem.ISBN13}, {"operacion", "eliminar" }})"
                class="btn btn-light">
                 <strong>X</strong>
             </a>
@@ -16,17 +16,17 @@
 
     <tr>
         <td>
-            <!-- boton +, label cantidad, boton - y precio -->
+            <!-- boton +, label cantidad, boton - y precio  asp-action="restarCantidadLibro"  asp-action="sumarCantidadLibro" -->
             <a asp-controller="Pedido"
-               asp-action="restarCantidadLibro"
-               asp-all-route-data="@(new Dictionary<string,string>{ {"id", Model.LibroItem.ISBN13} })"
+               asp-action="operarCantidad"
+               asp-all-route-data="@(new Dictionary<string,string>{ {"id", Model.LibroItem.ISBN13}, {"operacion", "restar" } })"
                class="btn btn-primary btn-sm"> - </a>
 
             <label><small>@Model.CantidadItem</small></label>
 
             <a asp-controller="Pedido"
-               asp-action="sumarCantidadLibro"
-               asp-all-route-data="@(new Dictionary<string,string>{ {"id", Model.LibroItem.ISBN13} })"
+               asp-action="operarCantidad"
+               asp-all-route-data="@(new Dictionary<string,string>{ {"id", Model.LibroItem.ISBN13}, {"operacion", "sumar" } })"
                class="btn btn-primary btn-sm"> + </a>
 
             <label><small>x</small> <span style="color:red"><small>@Model.LibroItem.Precio €</small></span></label>
