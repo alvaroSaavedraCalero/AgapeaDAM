@@ -1,27 +1,34 @@
-﻿<!--Mini vista para representar los datos de un objeto Libro, con su imagen en miniatura, titulo y un boton de comprar-->
+﻿<!--
+    minivista para representar los datos de un objeto Libro, con su imagen en miniatura, titulo..y un boton COMPRAR
+
+-->
 @model Libro
-
-
 <div class="mb-3" style="max-width: 540px;" id="cardLibro-@Model.ISBN13">
     <div class="row g-0">
-        <!--Columna con imagen libro y boton comprar-->
+        <!-- columna con imagen del libro y boton comprar-->
         <div class="col-md-4 text-center" style="height: 170px">
             <div class="w-100" style="height: 80%">
-                <a asp-controller="Tienda" asp-action="MostrarDetallesLibro" 
-                asp-all-route-data="@(new Dictionary<String,String>{{"isbn13", Model.ISBN13},{"titulo", Model.Titulo}})">
+                <a asp-controller="Tienda" asp-action="mostrarDetallesLibro"
+                   asp-all-route-data="@(new Dictionary<String,String>{{"isbn13", Model.ISBN13},{"titulo", Model.Titulo}})">
                     <img src="@Model.ImagenLibroBase64" class="img-fluid rounded-start rounded-end" alt="...">
                 </a>
             </div>
-            <a class="btn btn-primary btn-sm" id="btnComprar-@Model.ISBN13" style="visibility: hidden;"
-               asp-controller="Pedido" asp-action="AddLibroPedido"
-               asp-all-route-data="@(new Dictionary<String,String>{{"id", Model.ISBN13} })">Comprar</a>
+            <a class="btn btn-primary btn-sm"
+               id="btnComprar-@Model.ISBN13"
+               style="visibility: hidden;"
+               asp-controller="Pedido"
+               asp-action="addLibroPedido"
+               asp-all-route-data="@(new Dictionary<String,String>{{"id", Model.ISBN13} })">
+                Comprar
+            </a>
         </div>
-        <!--columna con detalles del libro: Titulo, autores, etc-->
+
+        <!-- columna con detalles del libro: Titulo, autores,....-->
         <div class="col-md-8">
             <div class="ms-3">
                 <h6 class="card-title" style="height: 50px">
                     <a class="text-decoration-none"
-                       asp-controller="Tienda" asp-action="MostrarDetallesLibro"
+                       asp-controller="Tienda" asp-action="mostrarDetallesLibro"
                        asp-all-route-data="@(new Dictionary<String,String>{{"isbn13", Model.ISBN13},{"Titulo",Model.Titulo }})">@Model.Titulo</a>
                 </h6>
                 <div class="card-text">@Model.Autores</div>
@@ -32,9 +39,32 @@
         </div>
     </div>
 </div>
-
 <script>
+    Array.from(document.querySelectorAll('div[id^="cardLibro-"]')).forEach(
+        function (el, pos, arr) {
+            el.addEventListener('mouseenter', function (ev) {
+                //muestro boton comprar...
+                let isbn = ev.target.getAttribute('id').split('-')[1];
+                console.log('estas dentro del div...',
+                    ev.target
+                    , isbn);
 
-    document.querySelectorAll('div[id^="cardLibro-"]')
+                document.getElementById('btnComprar-' + isbn).style.visibility = 'visible';
+            }); //cierre eventlistener mouseenter
 
-</script>
+            el.addEventListener('mouseleave', function (ev) {
+                //oculto boton comprar...
+                let isbn = ev.target.getAttribute('id').split('-')[1];
+                console.log('estas fuera del div...',
+                    ev.target
+                    , isbn);
+
+
+                document.getElementById('btnComprar-' + isbn).style.visibility = 'hidden';
+
+            }); //cierre eventlistener mouseleave
+
+
+        }
+    ); //cierre foreach
+</script> 

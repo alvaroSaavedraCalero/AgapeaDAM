@@ -36,6 +36,13 @@ namespace AgapeaDAM.Controllers
             //nosotros, para q cargue algo, hacemos q si esta vacio cargue  libros de informatica...
             if (String.IsNullOrEmpty(idCategoria)) idCategoria = "2";
 
+            // si el id esta vacio, estamos en la pagina incial 
+            // se podrian cargar los libros mas vendido del mes, o las ofertas especiales, etc
+
+            // nosotros, para que cargue algo, hacemos que si esta vacio, cargue los libros de informatica.
+
+            if (String.IsNullOrEmpty(idCategoria)) idCategoria = "2";
+
             List<Libro> listaLibros = this.servicioBD.recuperaLibros(idCategoria);
             return View(listaLibros);
         }

@@ -1,4 +1,6 @@
-﻿@model Cliente
+﻿
+
+@model Cliente
 @{
     Direccion direcionprincipal = Model.MisDireciones.Where((Direccion direc) => direc.EsPrincipal == true).Single<Direccion>();
 }
@@ -132,7 +134,7 @@
                                     </label>
                                 </div>
                             </div>
-                        </div>
+            </div>
 
                         <div class="row" id="filafacturacontainer">
                             <div class="container" id="facturacontainer">
