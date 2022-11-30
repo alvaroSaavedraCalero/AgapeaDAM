@@ -1,0 +1,462 @@
+﻿@model Cliente
+@{
+    Direccion direcionprincipal = Model.MisDireciones.Where((Direccion direc) => direc.EsPrincipal == true).Single<Direccion>();
+}
+<div class="container">
+    @if (Model.PedidoActual.ItemsPedido.Count == 0)
+    {
+        <div class="row">
+            <div class="col">
+                <h5><strong>No hay ningun libro en tu Pedido actual</strong></h5> Pasate por la tienda y compra algo mamon....
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            <!-- columna para direcciones de envio y pago por tarjeta o paypal-->
+            <div class="col-8">
+
+                <form id="formpedido" method="post" asp-controller="Pedido" asp-action="FinalizarPedido">
+                    <div class="container">
+
+                        <div class="row mt-4">
+                            <div class="col-1"><img src="~/images/img1_mostrar_pedido_datosentrega.png" style="width: 40px;height:26px;" /></div>
+                            <div class="col-11"> <h4><strong>1.- Datos de entrega</strong></h4></div>
+                        </div>
+
+                        <div class="row">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="direccionradios" id="direccionprincipal" value="direccionprincipal">
+                                <label class="form-check-label" for="direccionprincipal">
+                                    @direcionprincipal.Calle . @direcionprincipal.MuniDirecc.DMUN50, @direcionprincipal.ProvDirec.PRO @direcionprincipal.CP ( @direcionprincipal.Pais )
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="direccionradios" id="direccionagapea" disabled>
+                                <label class="form-check-label" for="direccionagapea">
+                                    Recoger en librería Agapea (No disponible en este momento. Puede hacer el pedido para envío a domicilio)
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="direccionradios" id="otradireccion" value="otradireccion" checked>
+                                <label class="form-check-label" for="otradireccion">
+                                    Recibir en otra dirección
+                                </label>
+                            </div>
+                        </div>
+
+                        <!--    fila q solo es visible si se chequea radiobutton otra direccion-->
+                        <div class="row" id="filaotradireccioncontainer">
+                            <div class="container" id="otradireccioncontainer">
+
+                                <div class="row">
+                                    <div class="col-6">
+                                        <label for="inputDireccion" class="form-label">Direccion de Envio:</label>
+                                        <input type="text" class="form-control" id="inputDireccion" name="calle" placeholder="Mi Direccion">
+                                    </div>
+                                    <div class="col-2">
+                                        <label for="inputCP" class="form-label">Codigo Postal:</label>
+                                        <input type="text" class="form-control" id="inputCP" name="cp" placeholder="Codigo Postal: 28803">
+                                    </div>
+                                    <div class="col-4">
+                                        <label for="inputMunicipio" class="form-label">Municipio:</label>
+                                        <select id="inputMunicipio" class="form-select" name="municipio" disabled>
+                                            <option value="0" selected> - Selecciona un Municipio -</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-6">
+                                        <label for="inputPais" class="form-label">Pais:</label>
+                                        <input type="text" class="form-control" id="inputPais" name="pais" placeholder="España">
+                                    </div>
+
+                                    <div class="col-6">
+                                        <label for="inputProvincia" class="form-label">Provincia:</label>
+                                        <select id="inputProvincia" class="form-select" name="provincia">
+                                            <option value="0" selected> - Seleccionar Provincia - </option>
+                                            @{
+                                                foreach (Provincia unaprov in (List<Provincia>)ViewData["provincias"])
+                                                {
+                                                    <option value="@unaprov.CPRO-@unaprov.PRO">@unaprov.PRO</option>
+                                                }
+                                            }
+                                        </select>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+                        <!-- ----------------------------------------------------------------- -->
+                        <!-- filas para datos de contacto de persona entrega del pedido-->
+                        <div class="row">
+                            <div class="col-6">
+                                <label for="inputNombre" class="form-label">Nombre *</label>
+                                <input type="text" class="form-control" id="inputNombre" name="nombre" value="@Model.Nombre">
+                            </div>
+                            <div class="col-6">
+                                <label for="inputApellidos" class="form-label">Apellidos *</label>
+                                <input type="text" class="form-control" id="inputApellildos" name="apellidos" value="@Model.Apellidos">
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-6">
+                                <label for="inputEmail" class="form-label">Correo Electronico *</label>
+                                <input type="text" class="form-control" id="inputEmail" name="email" value="@Model.CuentaCliente.Email">
+                            </div>
+                            <div class="col-6">
+                                <label for="inputTelefono" class="form-label">Telefono de contacto *</label>
+                                <input type="text" class="form-control" id="inputTelefono" name="telefono" value="@Model.Telefono">
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+                            <div class="col">
+                                <label for="inputOtrosDatos" class="form-label">Otros datos de entrega <span class="text-muted"><small>(Max.50 caracteres)</small></span></label>
+                                <input type="text" class="form-control" id="inputOtrosDatos" name="otrosdatos">
+                            </div>
+                        </div>
+                        <!-- ----------------------------------------------------------------- -->
+                        <!-- -----------------------filas para DESEO FACTURA ------------------ -->
+                        <div class="row">
+                            <div class="col">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="" id="checkfactura" checked>
+                                    <label class="form-check-label" for="checkfactura">
+                                        Deseo Factura
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row" id="filafacturacontainer">
+                            <div class="container" id="facturacontainer">
+
+                                <div class="row mt-4">
+                                    <div class="col-1"><img src="~/images/img2_mostrar_pedido_factura.png" style="width: 40px;height:26px;" /></div>
+                                    <div class="col-11"><h4><strong>2.- Datos para su factura</strong></h4></div>
+                                </div>
+
+                                <div class="row">
+
+                                    <div class="col-6">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="datosfacturaradios" id="datosfacturaempresa" checked value="datosfacturaempresa">
+                                            <label class="form-check-label" for="datosfacturaempresa">
+                                                Empresa
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-6">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="datosfacturaradios" id="datosfacturaparticular" value="datosfacturaparticular">
+                                            <label class="form-check-label" for="datosfacturaparticular">
+                                                Profesional, particular o autonomo
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-6">
+                                        <label for="inputEmpresa" class="form-label">Nombre de la Empresa</label>
+                                        <input type="text" class="form-control" id="inputEmpresa" name="nombreEmpresa">
+                                    </div>
+                                    <div class="col-6">
+                                        <label for="inputCIF" class="form-label">CIF</label>
+                                        <input type="text" class="form-control" id="inputCIF" name="cifEmpresa">
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <!--  ------------------------------------------------------------------ -->
+                        <!-- -----------------------filas para metodo de PAGO ------------------ -->
+                        <div class="row mt-4">
+                            <div class="col-1"><img src="~/images/im3_motrar_pedido_pago.png" style="width: 40px;height:26px;" /></div>
+                            <div class="col-11" id="txtpago"><h4><strong>3.- Pago</strong></h4></div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="pagoradios" id="pagotarjeta" checked value="pagotarjeta">
+                                    <label class="form-check-label" for="pagotarjeta">
+                                        Pago con tarjeta
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="pagoradios" id="pagopaypal">
+                                    <label class="form-check-label" for="pagopaypal">
+                                        Pago mediante <img src="/images/paypal.gif">
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- formulario con datos de la tarjeta si pagostarjeta esta chekqueado-->
+                        <div class="row mt-2" id="filadatoscardcontainer">
+                            <div class="container" id="datoscardcontainer" style="background-color:#ededed;">
+                                <div class="row">
+                                    <div class="col"><h5>Datos de la tarjeta</h5></div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-5">
+                                        <label for="inputNumero" class="form-label">Numero de la tarjeta *</label>
+                                        <input type="text" id="inputNumero" class="form-control" name="numerocard">
+                                    </div>
+
+                                    <div class="col-3">
+                                        <label class="form-label">Fecha caducidad *</label>
+                                        <select id="inputAnio" class="form-select" name="aniocard">
+                                            @for (int anio = DateTime.Now.Year; anio < DateTime.Now.Year + 10; anio++)
+                                            {
+                                                <option value="@anio">@anio</option>
+                                            }
+                                        </select>
+                                    </div>
+                                    <div class="col-2">
+                                        <label class="form-label"> </label>
+                                        <select id="inputMes" class="form-select" name="mescard">
+                                            @for (int i = 1; i <= 12; i++)
+                                            {
+                                                <option value="@i">@i</option>
+                                            }
+                                        </select>
+                                    </div>
+
+                                    <div class="col-2">
+                                        <label for="inputCVV" class="form-label">CVV *</label>
+                                        <input type="text" class="form-control" id="inputCVV" name="cvv">
+                                    </div>"
+                                </div>
+
+                                <div class="row">
+                                    <div class="col">
+                                        <label for="inputNombreBanco" class="form-label">Nombre del banco de la tarjeta *</label>
+                                        <input type="text" class="form-control" id="inputNombreBanco" name="nombrebancocard">
+                                    </div>
+                                </div>
+
+                                <div class="row mt-2">
+                                    <div class="col"><img src="~/images/tarjetas.png" style="width: 200px; height: 41px;"><span class="text-muted">Pago Seguro 100% garantizado</span></div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- ------------------------------------------------------------------- -->
+
+                        <div class="row mt-5">
+                            <div class="col-3"></div>
+                            <div class="col-9">
+                                <a onclick="javascript:$('#formpedido').submit();" class="btn btn-primary btn-lg">
+                                    <i class="fa-solid fa-truck-fast"></i>  Finalizar Pedido
+                                </a>
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
+
+            </div>
+
+            <!-- columna para los elementos del pedido actual-->
+            <div class="col-4">
+
+                <div class="container">
+                    <div class="row">
+                        <div class="col">
+                            <h5><strong>Resumen de la cesta</strong></h5>
+                        </div>
+                    </div>
+
+                    @foreach (ItemPedido item in Model.PedidoActual.ItemsPedido)
+                    {
+                        <div class="row">
+                            <partial name="_VistaElementoPedido" model="item" />
+                        </div>
+                    }
+
+                    <hr />
+
+                    <div class="row">
+                        <div class="col-10">
+                            <p><strong>SubTotal: </strong></p>
+                        </div>
+                        <div class="col-2">
+                            <p style="color:red">@Model.PedidoActual.SubTotal €</p>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-10">
+                            <p><strong>Gastos de envio y gestion: </strong></p>
+                        </div>
+                        <div class="col-2">
+                            <p style="color:red">@Model.PedidoActual.GastosEnvio €</p>
+                        </div>
+                    </div>
+
+                    <div class="row" style="background:#ededed">
+                        <div class="col-10">
+                            <p><strong>Total a pagar: </strong></p>
+                        </div>
+                        <div class="col-2">
+                            <p style="color:red"><strong>@Model.PedidoActual.Total €</strong></p>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <small>El periodo de entrega es de <span style="color:forestgreen">de 24 a 48 horas</span></small>
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-6">
+                            <a asp-controller="Tienda" asp-action="RecuperaLibros" class="btn btn-outline-primary">
+                                <i class="fa-solid fa-book"></i>  Seguir comprando
+                            </a>
+                        </div>
+
+                        <div class="col-6">
+                            <a onclick="javascript:$('#formpedido').submit();" class="btn btn-primary">
+                                <i class="fa-solid fa-truck-fast"></i>  Finalizar Pedido
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    }
+
+</div>
+
+<script>
+
+    //-------------------------------------------------------------------
+    //1º si chequeamos otra direccion de envio, mostramos formulario de nueva direccion, sino lo ocultamos
+    //interceptamos evento "change" del grupo de radios "direccionradios"...cuando el evento lo provoca el radio "otradireccion"
+    //es cuando muestro el form.de otras direcciones, sino lo oculto <-- el problema de esto es q te deja el hueco del elemento ocultado
+    //mejor usar .detach de jquery
+
+    var otradireccioncontainer; //<--- voy a almacenar todo el div con id='otradireccioncontainer'
+
+    $('input[name="direccionradios"]').change(
+        function (ev) {
+            console.log(ev.target)
+            if ($(ev.target).attr('value') == 'otradireccion') {
+                //muestro form.otra direccion
+                //console.log('...mostramos form.otra direccion...');
+                //$('#otradireccioncontainer').attr('style','visibility:visible');
+
+                //añado la variable q contenia en memoria del div con el contenedor otradieccioncontainer a la fila donde estaba
+                otradireccioncontainer.appendTo($('#filaotradireccioncontainer'));
+            } else {
+                //oculto form. otra direccion
+                //console.log('....ocultamos form.otra direccion...');
+                //$('#otradireccioncontainer').attr('style','visibility:hidden');
+
+                //desasocio del DOM el contenedor y lo meto en memoria en la variable otradireccioncontainer
+                otradireccioncontainer = $('#otradireccioncontainer').detach();
+            }
+        }
+    );
+    // cargamos municipios cuando se selecciona una prov. del select 'inputProvincias'
+    $('#inputProvincia').change(
+        function (ev) {
+            console.log('has seleccionado la provincia....', ev.target.value);
+
+            $('#inputMunicipio').removeAttr('disabled');
+            $('#inputMunicipio').empty();
+
+            var cpro = ev.target.value.split('-')[0];
+
+            $.get(`https://apiv1.geoapi.es/municipios?CPRO=${cpro}&type=JSON&key=&sandbox=1`)
+                .done(
+                    respuestaServer => {
+                        console.log('respuesta del servicio REST obtener municipios...', respuestaServer);
+                        respuestaServer.data.forEach(
+                            muni => $('#inputMunicipio').append(`<option value="${muni.CMUM}-${muni.DMUN50}">${muni.DMUN50}</option>`)
+                        );
+
+                    }
+                )
+                .fail(
+                    errores => console.log('error al intentar recuperar municipios...', errores)
+                );
+        }
+    );
+    //------------------------------------------------------------------------------
+
+    //#region 2º si esta chequeado el checkbox Deseo Factura (el id: 'checkfactura') tengo q mostrar el form. para generar factura a empresa o particular
+    //y cambiar el texto del metodo de pago de 2.- Pago a 3.- Pago
+
+    var facturacontainer;
+    $('#checkfactura').change(
+        function (ev) {
+            if ($(ev.target).is(':checked')) {
+                //adjunto al dom el contenedor con el form. de factura
+                facturacontainer.appendTo($('#filafacturacontainer'));
+
+                //cambio del texto del metodo de pago a 3.- Pago
+                $('#txtpago strong').text('3.- Pago');
+
+            } else {
+                //desasocio del DOM el contenedor con el form. de factura y lo meto en variable
+                facturacontainer = $('#facturacontainer').detach();
+
+                //cambio texto del metodo de pago a 2.- Pago
+                $('#txtpago strong').text('2.- Pago');
+            }
+
+        }
+    );
+
+    //debemos chequear los radios 'datosfacturaradios' si vale 'datosfacturaempresa' o 'datosfacturaparticular'
+    //si vale 'datosfacturaempresa' cambiamos los LABEL de las cajas de texto a 'Nombre de la Empresa' y 'CIF'
+    //si vlae 'datosfacturaparticular' los cambiamos a 'Apellidos y Nombre' y 'NIF'
+
+    $('input[name="datosfacturaradios"]').change(
+        function (ev) {
+            if ($(ev.target).attr('value') == 'datosfacturaempresa') {
+
+                $('label[for="inputEmpresa"]').text('Nombre de la Empresa');
+                $('label[for="inputCIF"]').text('CIF');
+
+            } else {
+
+                $('label[for="inputEmpresa"]').text('Apellidos y Nombre');
+                $('label[for="inputCIF"]').text('NIF');
+            }
+
+        }
+    );
+    //#endregion --------------------------------------------------------------
+
+    //#region 3º si en el pagoradios esta seleccionado pago con tarjeta muestro form. de alta tarjeta, si esta pago paypal oculto
+
+    var datoscardcontainer;
+    $('input[name="pagoradios"]').change(
+        ev => {
+            if ($(ev.target).attr('value') == 'pagotarjeta') {
+                datoscardcontainer.appendTo($('#filadatoscardcontainer'));
+            } else {
+                datoscardcontainer = $('#datoscardcontainer').detach();
+            }
+        }
+    );
+
+
+
+</script>

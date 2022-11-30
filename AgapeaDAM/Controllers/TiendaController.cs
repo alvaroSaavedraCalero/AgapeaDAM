@@ -27,13 +27,14 @@ namespace AgapeaDAM.Controllers
         /// Metodo para mostrar los libros en la vista "RecuperaLibros"
         /// </summary>
         /// <param name="id">El idCategoria de cada libro</param>
-        /// <returns></returns>
+        /// <returns>La vista RecuperaLibros con los libros a pintar</returns>
         [HttpGet]
         public IActionResult RecuperaLibros(String idCategoria)
         {
-            // en el parametro id va el IdCategoria de los libros que se van a mostrar 
-            // usando el servicio de acceso a datos recuperar los libros de esa categoria 
-            // y pasarselos a la vista para que los pinte
+            //si el id esta vacio, estamos en la pag.inicial (se acaba de entrar)
+            //se podria cargar los libros mas vendidos del mes, las ofertas especiales,...
+            //nosotros, para q cargue algo, hacemos q si esta vacio cargue  libros de informatica...
+            if (String.IsNullOrEmpty(idCategoria)) idCategoria = "2";
 
             List<Libro> listaLibros = this.servicioBD.recuperaLibros(idCategoria);
             return View(listaLibros);
