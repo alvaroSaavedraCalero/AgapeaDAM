@@ -15,6 +15,17 @@
     }
     else
     {
+
+        <!-- Fila de errores para mostrar posibles errores en pago con tarjeta o paypa -->
+        if (! String.IsNullOrEmpty((String) ViewData["errores"]))
+        {
+            <div class="row">
+                <div class="col">
+                    <p class="text-danger">* @(ViewData["errores"] as String)</p>
+                </div>
+            </div>
+        }
+
         <div class="row">
             <!-- columna para direcciones de envio y pago por tarjeta o paypal-->
             <div class="col-8">

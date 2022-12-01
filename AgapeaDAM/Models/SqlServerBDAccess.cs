@@ -11,7 +11,14 @@ namespace AgapeaDAM.Models
     public class SqlServerBDAccess : IBDAccess
     {
         #region ...propiedades de la clase de acceso a datos contra sqlserver....
-        public string CadenaConexionSever { get; set; } = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=ApageaBD;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+        public string CadenaConexionSever { get; set; }
+        private IConfiguration config;
+
+        public SqlServerBDAccess(IConfiguration config)
+        {
+            this.config = config;
+            this.CadenaConexionSever = this.config.GetConnectionString("SqlServerConnectionString");
+        }
 
 
 

@@ -1,6 +1,7 @@
 ﻿using AgapeaDAM.Models;
 using AgapeaDAM.Models.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Stripe;
 using System.Text.Json;
 
 namespace AgapeaDAM.Controllers
@@ -10,6 +11,7 @@ namespace AgapeaDAM.Controllers
         #region ... propiedades de la clase ...
 
         private IBDAccess servicioBD;
+        private IConfiguration config;
 
         public PedidoController(IBDAccess servicioBD)
         {
@@ -158,12 +160,131 @@ namespace AgapeaDAM.Controllers
         {
             try
             {
+
+
                 Cliente cliente = JsonSerializer.Deserialize<Cliente>(HttpContext.Session.GetString("datosCliente"));
-                return View(cliente);
-            }
-            catch (Exception ex)
+
+                // la direccion depende si el radio direccionradios esta chequeado la direccion principal del cliente y otra direccion...
+                Direccion direccionStripe;
+
+                if (direccionradios == "direccionprincipal")
+                {
+                    direccionStripe = cliente.MisDireciones.Where((Direccion direc) => direc.EsPrincipal == true).Single<Direccion>();
+                }
+                else
+                {
+                    direccionStripe = new Direccion
+                    {
+                        Calle = calle,
+                        CP = System.Convert.ToInt32(cp),
+                        Pais = pais,
+                        ProvDirec = new Provincia { CPRO = provincia.Split('-')[0], PRO = provincia.Split('-')[1], CCOM = "" },
+                        MuniDirecc = new Municipio { CPRO = provincia.Split('-')[0], CMUM = municipio.Split('-')[0], DMUN50 = municipio.Split('-')[1], CUN = "" }
+                    };
+                }
+
+                // si la variable pasada en el formulario "pagoradios" vale "pagotarjeta" pago con stripe si vale "pagopaypal"
+                if (pagoradios == "pagotarjeta")
+                {
+                    #region ... pago mediante tarjeta de credito con stripe ...
+
+                    // 1º paso es crearte un objeto Stripe CUSTOMER (Cliente) sobre el cual vas a cargar el cargo del pedido
+                    // https://stripe.com/docs/api/customers/create?lang=dotnet
+
+                    StripeConfiguration.ApiKey = this.config.GetSection("StripeAPIKey").Value;
+
+                    CustomerCreateOptions options = new CustomerCreateOptions
+                    {
+                        Email = cliente.CuentaCliente.Email,
+                        Name = cliente.Nombre + " " + cliente.Apellidos,
+                        Phone = cliente.Telefono,
+                        Address = new AddressOptions
+                        {
+                            City = direccionStripe.MuniDirecc.DMUN50,
+                            State = direccionStripe.ProvDirec.PRO,
+                            Country = direccionStripe.Pais,
+                            Line1 = direccionStripe.Calle,
+                            PostalCode = direccionStripe.CP.ToString()
+                        },
+                        Description = "Cliente de Agapea.com",
+                        Metadata = new Dictionary<string, string>
+                    {
+                        {"FechaNacimiento", cliente.FechaNacimiento.ToString() },
+                        {"IdCliente", cliente.IdCliente }
+                    }
+                    };
+
+                    Customer customer = new CustomerService().Create(options);
+
+                    // 2º paso es asociar a este objeto CUSTOMER un medio de pago, en nuestro caso una tarjeta de credito
+                    // objeto CARD de stripe
+
+                    // 2.1 primero crear lo que se denomina un TOKEN para la tarjeta a asociar al cliente (donde se especifican las caract. de 
+                    // la tarjeta (numero, fecha exp. numero cvv, nombre del propietario tarjeta, etc...)
+
+                    TokenCreateOptions optionsCardToken = new TokenCreateOptions
+                    {
+                        Card = new TokenCardOptions
+                        {
+                            Number = numerocard, // <-- para hacer pruebas meter este numero: "4242424242424242",
+                            ExpMonth = mescard,
+                            ExpYear = aniocard,
+                            Cvc = cvv,
+                            Name = cliente.Nombre + " " + cliente.Apellidos
+                        }
+                    };
+
+                    Token tokenTarjeta = new TokenService().Create(optionsCardToken);
+
+                    // 2.2 usando este TOKEN, se crear la tarjeta objeto CARD y se asocia al cliente creado en el paso 1º
+
+                    CardCreateOptions cardOptions = new CardCreateOptions
+                    {
+                        Source = tokenTarjeta.Id
+                    };
+
+                    Card tarjetaCredito = new CardService().Create(customer.Id, cardOptions);
+
+
+                    // 3º paso es crear el cargo (el pago a realizar por el cliente usando esa tarjeta), es un objeto CHARGE de stripe
+                    // defines la cantidad a pagar total, los gastos, el tipo de moneda, ... una vez pasado el cargo vemos su estado
+                    // para ver si se ha cargado 
+
+                    ChargeCreateOptions chargeOptions = new ChargeCreateOptions
+                    {
+                        Amount = System.Convert.ToInt64(cliente.PedidoActual.Total) * 100,
+                        Currency = "eur",
+                        Source = tarjetaCredito.Id,
+                        Description = "Pedido de Agapea.com con el IdPedido: " + cliente.PedidoActual.IdPedido,
+                        Customer = customer.Id
+                    };
+
+                    Charge cargoPedido = new ChargeService().Create(chargeOptions);
+
+                    if (cargoPedido.Status.ToLower() == "succeeded")
+                    {
+                        return RedirectToAction("FinalizarPedidoOK");
+                    }
+                    else
+                    {
+                        throw new Exception("Pago rechazado por la pasarela de pago, revisa lso datos de tu tarjeta eintentalo de nuevo mas tarde");
+                    }
+
+                    #endregion
+                }
+                else
+                {
+                    #region ... pago mediante paypal ...
+
+
+
+                    #endregion
+
+                }
+            } catch (Exception ex)
             {
-                throw ex;
+                ViewData["errores"] = ex.Message;
+                return View();
             }
         }
 
