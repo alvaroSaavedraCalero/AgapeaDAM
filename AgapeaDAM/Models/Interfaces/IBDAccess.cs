@@ -5,6 +5,9 @@
     public interface IBDAccess
     {
         public String CadenaConexionSever { get; set; }
+
+        #region ... metodos panel cliente...
+
         public Boolean RegistrarClliente(Cliente clienteAguardar);
         public Cliente ExisteCliente(String email, String password);
         public Boolean ComprobarCuentaActiva(String email);
@@ -16,6 +19,10 @@
         public Boolean updateCuentaSubirImagen(String nombreFichero, String contenidoBASE64, String idCuenta);
 
         public Boolean updateDatosCliente(Cliente datosCliente, String newPassword, String oldLogin);
+
+        #endregion
+
+
 
         #region metodos de Tienda
 

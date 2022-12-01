@@ -1,15 +1,13 @@
-﻿@using AgapeaDAM.Models.Interfaces;
-@using System.Text.Json;
-@inject IBDAccess servicioBD;
+﻿@using AgapeaDAM.Models.Interfaces
+@using System.Text.Json
+
+@inject IBDAccess _servicioBD
 
 @{
-    List<Categoria> categoriasRaiz = this.servicioBD.devolverCategoriasRaiz();
-
-    String? jsonCliente = Context.Session.GetString("datosCliente");
-
-    Cliente? cliente = !String.IsNullOrEmpty(jsonCliente) ? JsonSerializer.Deserialize<Cliente>(jsonCliente) : null;
+    List<Categoria> _categoriasRaiz = this._servicioBD.devolverCategoriasRaiz();
+    String? _jsonCliente = Context.Session.GetString("datoscliente");
+    Cliente? _cliente = !String.IsNullOrEmpty(_jsonCliente) ? JsonSerializer.Deserialize<Cliente>(_jsonCliente) : null;
 }
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -19,7 +17,6 @@
     <title>@ViewData["Title"] - AgapeaDAM</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/AgapeaDAW.styles.css" asp-append-version="true" />
     <style>
         .bg-negro {
             background-color: #2c2c2c;
@@ -31,7 +28,7 @@
 
 
     <!-- font awesome -->
-    <script src="https://kit.fontawesome.com/2be1129cd2.js" crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/cb407d7525.js" crossorigin="anonymous"></script>
 </head>
 <body>
     <header id="header">
@@ -49,13 +46,14 @@
                                     <img src="~/images/botonMINIcontacto.png">
                                 </a>
 
-                                <!-- si variable se sesion cliente no es null, sustituyo boton de login por email para ir al panel -->
-                                @if (cliente != null)
+                                <!-- si variable de sesion datoscliente no es null sustituyo boton de login por email para ir al panel-->
+                                @if (_cliente != null)
                                 {
-                                    <a asp-route="panelCliente" 
-                                    asp-all-route-data="@(new Dictionary<String, String>{{"controller", "Cliente"}, {"action", "InicioPanel"}})"
-                                    class="btn btn-sm text-white">@cliente.CuentaCliente.Email</a>
-                                } else
+                                    <a asp-route="panelcliente"
+                                   asp-all-route-data="@(new Dictionary<string,string>{ {"controller","Cliente"}, {"action","InicioPanel"} })"
+                                   class="btn btn-sm text-white"> @_cliente.CuentaCliente.Email </a>
+                                }
+                                else
                                 {
                                     <a asp-controller="Cliente" asp-action="Login" class="btn br-negro btn-sm">
                                         <img src="~/images/botonMINIlogin.png">
@@ -107,8 +105,11 @@
     <div class="container">
         <div class="row">
 
-            <!-- en rutas /Pedido/... o en /Cliente/Registro o Cliente/login no se muestra ningun panel -->
-            @if (System.Text.RegularExpressions.Regex.IsMatch("^(/Pedido|/Cliente/(Login|Registro))", Context.Request.Path.ToString()))
+            <!-- en rutas /Pedido/....  o en /Cliente/Registro o /Cliente/Loginno se muestra ningun panel-->
+            @if (
+            System.Text.RegularExpressions.Regex.IsMatch(@"(/Pedido/MostrarPedido|/Cliente/(Login|Registro))", Context.Request.Path.ToString()) &&
+            !System.Text.RegularExpressions.Regex.IsMatch(@"^/?$", Context.Request.Path.ToString())
+            )
             {
                 <div class="col-12 mt-4">
                     @RenderBody()
@@ -117,8 +118,6 @@
             else
             {
                 <div class="col-3 border border-bottom-0 border-top-0 border-start-0 border-end-1 border-dark">
-                    <!--en la funcion de la url que ponga el cliente muestro el panel de categorias, el panel de cliente o ninguno-->
-                    <!--Recuperamos el estado de sesion (HttpContext del controlador), pero como estamos en la vista usamos Context-->
                     <!-- EN FUNCION DE LA URL QUE PONGA EL CLIENTE MUESTRO EL PANEL DE CATEGORIAS, EL PANEL DEL CLIENTE O NINGUNO-->
                     @if (Context.Request.Path.ToString().Contains("/Tienda") || System.Text.RegularExpressions.Regex.IsMatch("^/?$", Context.Request.Path.ToString()))
                     {
@@ -126,7 +125,7 @@
                         <h6 class="text-dark mt-4 ms-3">CATEGORÍAS</h6>
                         <!-- usando el servicio de acceso a datos, tendria q recuperar las categorias raiz y en un bucle mostralas-->
                         <div class="list-group">
-                            @foreach (Categoria item in categoriasRaiz)
+                            @foreach (Categoria item in _categoriasRaiz)
                             {
                                 <a asp-controller="Tienda"
                        asp-action="RecuperaLibros"
@@ -142,31 +141,49 @@
                     }
                     else if (Context.Request.Path.ToString().Contains("/Cliente/Panel"))
                     {
-                        <!--panel de opciones del dashboard del cliente-->
+                        <!-- panel de opciones del dashboard del cliente-->
+
                         <h6 class="text-dark mt-4 ms-3">PANEL PERSONAL DEL CLIENTE</h6>
-                        <div class="list-group">
+                        <div class="container">
+                            <!-- fila con imagen cliente y nombre y email de bienvenida-->
+                            <div class="row" style="background:#ededed;">
+                                <div class="col text-center">
+                                    <img src="@_cliente.CuentaCliente.ImagenAvatarBASE64" style="width:115px; height:140px;" />
+                                </div>
+                            </div>
 
-                            @{
-                                foreach (String item in new List<String> { "Inicio Panel", "Mis Compras", "Mis Opiniones", "Mis Listas" })
-                                {
+                            <div class="row" style="background:#ededed;">
+                                <div class="col">
+                                    <p class="text-muted"><small>Bienvenido @_cliente.Nombre @_cliente.Apellidos (@_cliente.CuentaCliente.Email)</small></p>
+                                </div>
+                            </div>
 
-                                    <a href="https://localhost:7281/Cliente/Panel/@item.Replace(" ", "")"
-                           class="list-group-item list-group-item-action border border-end-0 border-start-0 text-dark">@item</a>
-                                }
-                            }
+                            <!-- fila con opciones panel cliente-->
+                            <div class="row">
+                                <div class="col">
+                                    <div class="list-group">
+                                        @foreach (String item in new List<String> { "Inicio Panel", "Mis Compras", "Mis Opiniones", "Mis Listas" })
+                                        {
+                                            <a href="https://localhost:7281/Cliente/Panel/@item.Replace(" ","")"
+                                   class="list-group-item list-group-item-action border border-end-0 border-start-0 text-dark">
+                                                @item
+                                            </a>
 
+                                        }
+                                    </div>
+
+                                </div>
+                            </div>
                         </div>
+
                     }
-
-
                 </div>
 
                 <div class="col-9 mt-4">
                     @RenderBody() <!-- aqui iria la vista originada por el metodo de accion del controlador cargado por el modulo de enrutamiento-->
                 </div>
+
             }
-
-
 
         </div>
     </div>
@@ -183,5 +200,6 @@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
+
 
 
