@@ -32,7 +32,7 @@ namespace AgapeaDAM.Controllers
         /// <param name="idISBN13">ISBN13 del libro a añadir</param>
         /// <returns>Nos retorna a la vista Mostrar Pedido</returns>
         [HttpGet]
-        public IActionResult addLibroPedido(String idISBN13)
+        public IActionResult AddLibroPedido(String idISBN13)
         {
             try
             {
@@ -82,7 +82,7 @@ namespace AgapeaDAM.Controllers
                 APIRestResponse<Provincia> respuesta = await clienteHttp.GetFromJsonAsync<APIRestResponse<Provincia>>("https://apiv1.geoapi.es/provincias?type=JSON&key=&sandbox=1");
 
                 // Pasamos los datos del controlador a la vista sin usar @model
-                ViewData["provincia"] = respuesta.datosConvertidos(respuesta.Data);
+                ViewData["provincias"] = respuesta.datosConvertidos(respuesta.Data);
 
                 return View(cliente);
             }

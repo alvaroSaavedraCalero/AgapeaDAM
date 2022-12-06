@@ -299,8 +299,8 @@ namespace AgapeaDAM.Controllers
                         DMUN50 = municipio.Split('-')[1],
                         CUN = ""
                     },
-                    EsPrincipal = false,
-                    EsFacturacion = false
+                    EsPrincipal = true,
+                    EsFacturacion = true
                 };
 
                 // si estamos modificando o borrando una direccion, el IdDireccion generado automaticamente lo tengo 

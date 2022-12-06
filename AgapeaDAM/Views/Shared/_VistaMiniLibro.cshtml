@@ -8,17 +8,17 @@
         <!-- columna con imagen del libro y boton comprar-->
         <div class="col-md-4 text-center" style="height: 170px">
             <div class="w-100" style="height: 80%">
-                <a asp-controller="Tienda" asp-action="mostrarDetallesLibro"
+                <a asp-controller="Tienda" asp-action="MostrarDetallesLibro"
                    asp-all-route-data="@(new Dictionary<String,String>{{"isbn13", Model.ISBN13},{"titulo", Model.Titulo}})">
-                    <img src="@Model.ImagenLibroBase64" class="img-fluid rounded-start rounded-end" alt="...">
+                    <img src="@Model.ImagenLibroBASE64" class="img-fluid rounded-start rounded-end" alt="...">
                 </a>
             </div>
             <a class="btn btn-primary btn-sm"
                id="btnComprar-@Model.ISBN13"
                style="visibility: hidden;"
                asp-controller="Pedido"
-               asp-action="addLibroPedido"
-               asp-all-route-data="@(new Dictionary<String,String>{{"id", Model.ISBN13} })">
+               asp-action="AddLibroPedido"
+               asp-all-route-data="@(new Dictionary<String,String>{{"idISBN13", Model.ISBN13} })">
                 Comprar
             </a>
         </div>
@@ -28,7 +28,7 @@
             <div class="ms-3">
                 <h6 class="card-title" style="height: 50px">
                     <a class="text-decoration-none"
-                       asp-controller="Tienda" asp-action="mostrarDetallesLibro"
+                       asp-controller="Tienda" asp-action="MostrarDetallesLibro"
                        asp-all-route-data="@(new Dictionary<String,String>{{"isbn13", Model.ISBN13},{"Titulo",Model.Titulo }})">@Model.Titulo</a>
                 </h6>
                 <div class="card-text">@Model.Autores</div>

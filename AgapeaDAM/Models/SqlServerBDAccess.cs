@@ -506,7 +506,7 @@ namespace AgapeaDAM.Models
                         {
                             IdCategoria = cursor["IdCategoria"].ToString(),
                             ImagenLibro = cursor["ImagenLibro"].ToString(),
-                            ImagenLibroBase64 = cursor["ImagenLibroBASE64"].ToString(),
+                            ImagenLibroBASE64 = cursor["ImagenLibroBASE64"].ToString(),
                             Titulo = cursor["Titulo"].ToString(),
                             Editorial = cursor["Editorial"].ToString(),
                             Autores = cursor["Autores"].ToString(),
@@ -555,7 +555,7 @@ namespace AgapeaDAM.Models
 
                         _libro.IdCategoria = cursor["IdCategoria"].ToString();
                         _libro.ImagenLibro = cursor["ImagenLibro"].ToString();
-                        _libro.ImagenLibroBase64 = cursor["ImagenLibroBASE64"].ToString();
+                        _libro.ImagenLibroBASE64 = cursor["ImagenLibroBASE64"].ToString();
                         _libro.Titulo = cursor["Titulo"].ToString();
                         _libro.Editorial = cursor["Editorial"].ToString();
                         _libro.Autores = cursor["Autores"].ToString();
