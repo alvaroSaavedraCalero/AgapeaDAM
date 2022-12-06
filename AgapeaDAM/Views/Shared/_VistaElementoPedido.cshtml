@@ -6,7 +6,7 @@
         <td>
             <!-- boton eliminar libro X  asp-action="eliminarLibroPedido" -->
             <a asp-controller="Pedido"
-               asp-action="operarCantidad"
+               asp-action="OperarCantidad"
                asp-all-route-data="@(new Dictionary<string,string>{ {"id", Model.LibroItem.ISBN13}, {"operacion", "eliminar" }})"
                class="btn btn-light">
                 <strong>X</strong>
@@ -18,14 +18,14 @@
         <td>
             <!-- boton +, label cantidad, boton - y precio  asp-action="restarCantidadLibro"  asp-action="sumarCantidadLibro" -->
             <a asp-controller="Pedido"
-               asp-action="operarCantidad"
+               asp-action="OperarCantidad"
                asp-all-route-data="@(new Dictionary<string,string>{ {"id", Model.LibroItem.ISBN13}, {"operacion", "restar" } })"
                class="btn btn-primary btn-sm"> - </a>
 
             <label><small>@Model.CantidadItem</small></label>
 
             <a asp-controller="Pedido"
-               asp-action="operarCantidad"
+               asp-action="=OperarCantidad"
                asp-all-route-data="@(new Dictionary<string,string>{ {"id", Model.LibroItem.ISBN13}, {"operacion", "sumar" } })"
                class="btn btn-primary btn-sm"> + </a>
 

@@ -11,11 +11,12 @@ namespace AgapeaDAM.Controllers
         #region ... propiedades de la clase ...
 
         private IBDAccess servicioBD;
-        private IConfiguration config;
+        private IConfiguration config; //<--- variable interna donde encapsulamos servicio para acceder a fichero configuracion appsettings.json
 
-        public PedidoController(IBDAccess servicioBD)
+        public PedidoController(IBDAccess servicioBD, IConfiguration config)
         {
             this.servicioBD = servicioBD;
+            this.config = config;
         }
 
 
@@ -91,47 +92,7 @@ namespace AgapeaDAM.Controllers
             }
         }
 
-        /// <summary>
-        /// Funcion para realizar distintas operaciones con la cantidad de los items del pedido
-        /// </summary>
-        /// <param name="idISBN13">Identificador del item (libro)</param>
-        /// <param name="operacion">Operacion a realizar con el item</param>
-        /// <returns>Vista MostrarPedio</returns>
-        [HttpGet]
-        public IActionResult OperarCantidad(String idISBN13, [FromQuery] String operacion)
-        {
-            try
-            {
-                Cliente cliente = JsonSerializer.Deserialize<Cliente>(HttpContext.Session.GetString("datosCliente"));
-                int posicionItem = cliente.PedidoActual.ItemsPedido.FindIndex((ItemPedido item) => item.LibroItem.ISBN13 == idISBN13 );
-
-                if (posicionItem == -1) throw new Exception("El libro con ese ISBN no existe en el pedido actual");
-
-                switch (operacion)
-                {
-                    case "eliminar":
-                        if (posicionItem != -1) cliente.PedidoActual.ItemsPedido.RemoveAt(posicionItem);
-                        break;
-
-                    case "sumar":
-                        if (posicionItem != -1) cliente.PedidoActual.ItemsPedido[posicionItem].CantidadItem += 1;
-                        break;
-
-                    case "restar":
-                        if (posicionItem != -1 && cliente.PedidoActual.ItemsPedido[posicionItem].CantidadItem > 1) cliente.PedidoActual.ItemsPedido[posicionItem].CantidadItem -= 1;
-                        break;
-                }
-
-                HttpContext.Session.SetString("datosCliente", JsonSerializer.Serialize<Cliente>(cliente));
-                return RedirectToAction("MostrarPedio");
-
-                
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
+        
 
 
 
@@ -188,6 +149,10 @@ namespace AgapeaDAM.Controllers
                 {
                     #region ... pago mediante tarjeta de credito con stripe ...
 
+                    //OJO!!!! NO HAY Q CREARSE UN OBJETO CUSTOMER Y CARD SIEMPRE, si el cliente ya ha comprado antes
+                    //lo tendra creado, habra q comprobar si lo tiene creado o no, usando metodo de la api stripe 
+                    //"SEARCH CUSTOMER": https://stripe.com/docs/api/customers/search?lang=dotnet
+
                     // 1º paso es crearte un objeto Stripe CUSTOMER (Cliente) sobre el cual vas a cargar el cargo del pedido
                     // https://stripe.com/docs/api/customers/create?lang=dotnet
 
@@ -221,6 +186,7 @@ namespace AgapeaDAM.Controllers
 
                     // 2.1 primero crear lo que se denomina un TOKEN para la tarjeta a asociar al cliente (donde se especifican las caract. de 
                     // la tarjeta (numero, fecha exp. numero cvv, nombre del propietario tarjeta, etc...)
+                    //https://stripe.com/docs/api/tokens/create_card?lang=dotnet
 
                     TokenCreateOptions optionsCardToken = new TokenCreateOptions
                     {
@@ -237,6 +203,7 @@ namespace AgapeaDAM.Controllers
                     Token tokenTarjeta = new TokenService().Create(optionsCardToken);
 
                     // 2.2 usando este TOKEN, se crear la tarjeta objeto CARD y se asocia al cliente creado en el paso 1º
+                    //https://stripe.com/docs/api/cards/create?lang=dotnet
 
                     CardCreateOptions cardOptions = new CardCreateOptions
                     {
@@ -248,7 +215,8 @@ namespace AgapeaDAM.Controllers
 
                     // 3º paso es crear el cargo (el pago a realizar por el cliente usando esa tarjeta), es un objeto CHARGE de stripe
                     // defines la cantidad a pagar total, los gastos, el tipo de moneda, ... una vez pasado el cargo vemos su estado
-                    // para ver si se ha cargado 
+                    // para ver si se ha cargado
+                    // //https://stripe.com/docs/api/charges/create?lang=dotnet
 
                     ChargeCreateOptions chargeOptions = new ChargeCreateOptions
                     {
@@ -276,7 +244,7 @@ namespace AgapeaDAM.Controllers
                 {
                     #region ... pago mediante paypal ...
 
-
+                    return View();
 
                     #endregion
 
@@ -295,7 +263,7 @@ namespace AgapeaDAM.Controllers
         /// <param name="operacion">parametro en la url</param>
         /// <returns></returns>
         [HttpGet]
-        public IActionResult operarCantidad(String id, [FromQuery] String operacion)
+        public IActionResult OperarCantidad(String id, [FromQuery] String operacion)
         {
             try
             {
@@ -333,85 +301,6 @@ namespace AgapeaDAM.Controllers
             }
         }
 
-        /*
-        [HttpGet]
-        public IActionResult eliminarLibroPedido(String id)
-        {
-            // en el parametro id va el libro a eliminar...
-            // recupero de la variable de sesion el objeto cliente, obtengo el pedido actual <-- Elementos del pedido
-            // busco el elemento cuyo libro tenga ese isbn y lo borro
-            // Despues actualizo la variable de sesion y redirijo a MostrarPedido
-
-            try
-            {
-                Cliente cliente = JsonSerializer.Deserialize<Cliente>(HttpContext.Session.GetString("datosCliente"));
-
-                int posEliminar = cliente.PedidoActual.ItemsPedido.FindIndex( (ItemPedido item)=> item.LibroItem.ISBN13 == id );
-                if (posEliminar != -1) cliente.PedidoActual.ItemsPedido.RemoveAt(posEliminar);
-
-                HttpContext.Session.SetString("datosCliente", JsonSerializer.Serialize<Cliente>(cliente));
-                return RedirectToAction("MostrarPedido");
-
-            }
-            catch (Exception ex)
-            {
-
-                throw ex;
-            }
-        }
-
-        [HttpGet]
-        public IActionResult sumarCantidadLibro(String id)
-        {
-            // en el id va el isbn13 del libro del que quiero incrementar la cantidad
-            try
-            {
-                Cliente cliente = JsonSerializer.Deserialize<Cliente>(HttpContext.Session.GetString("datosCliente"));
-
-                int posicionItemLibro = cliente.PedidoActual.ItemsPedido.FindIndex((ItemPedido item)=> item.LibroItem.ISBN13 == id);
-
-                if (posicionItemLibro == -1) throw new Exception("Libro no existe en el pedido... ");
-
-                cliente.PedidoActual.ItemsPedido[posicionItemLibro].CantidadItem += 1;
-
-                HttpContext.Session.SetString("datosCliente", JsonSerializer.Serialize<Cliente>(cliente));
-                return RedirectToAction("MostrarPedido");
-
-            }
-            catch (Exception ex)
-            {
-
-                throw ex;
-            }
-        }
-
-
-        [HttpGet]
-        public IActionResult restarCantidadLibro(String id)
-        {
-            // en el id va el isbn13 del libro del que quiero incrementar la cantidad
-
-            try
-            {
-                Cliente cliente = JsonSerializer.Deserialize<Cliente>(HttpContext.Session.GetString("datosCliente"));
-
-                int posicionItemLibro = cliente.PedidoActual.ItemsPedido.FindIndex((ItemPedido item) => item.LibroItem.ISBN13 == id);
-
-                if (posicionItemLibro == -1) throw new Exception("Libro no existe en el pedido... ");
-
-                if (cliente.PedidoActual.ItemsPedido[posicionItemLibro].CantidadItem > 1) cliente.PedidoActual.ItemsPedido[posicionItemLibro].CantidadItem -= 1;
-
-                HttpContext.Session.SetString("datosCliente", JsonSerializer.Serialize<Cliente>(cliente));
-                return RedirectToAction("MostrarPedido");
-
-            }
-            catch (Exception ex)
-            {
-
-                throw ex;
-            }
-        }
-        */
 
         #endregion
 

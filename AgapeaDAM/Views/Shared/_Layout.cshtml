@@ -4,9 +4,10 @@
 @inject IBDAccess _servicioBD
 
 @{
-    List<Categoria> _categoriasRaiz = this._servicioBD.devolverCategoriasRaiz();
-    String? _jsonCliente = Context.Session.GetString("datoscliente");
-    Cliente? _cliente = !String.IsNullOrEmpty(_jsonCliente) ? JsonSerializer.Deserialize<Cliente>(_jsonCliente) : null;
+    // Recuperamos las categorias y el cliente
+    List<Categoria> categoriasRaiz = this._servicioBD.devolverCategoriasRaiz();
+    String? jsonCliente = Context.Session.GetString("datosCliente");
+    Cliente? cliente = !String.IsNullOrEmpty(jsonCliente) ? JsonSerializer.Deserialize<Cliente>(jsonCliente) : null;
 }
 
 <!DOCTYPE html>
@@ -47,11 +48,11 @@
                                 </a>
 
                                 <!-- si variable de sesion datoscliente no es null sustituyo boton de login por email para ir al panel-->
-                                @if (_cliente != null)
+                                @if (cliente != null)
                                 {
                                     <a asp-route="panelcliente"
                                    asp-all-route-data="@(new Dictionary<string,string>{ {"controller","Cliente"}, {"action","InicioPanel"} })"
-                                   class="btn btn-sm text-white"> @_cliente.CuentaCliente.Email </a>
+                                   class="btn btn-sm text-white"> @cliente.CuentaCliente.Email </a>
                                 }
                                 else
                                 {
@@ -125,7 +126,7 @@
                         <h6 class="text-dark mt-4 ms-3">CATEGORÍAS</h6>
                         <!-- usando el servicio de acceso a datos, tendria q recuperar las categorias raiz y en un bucle mostralas-->
                         <div class="list-group">
-                            @foreach (Categoria item in _categoriasRaiz)
+                            @foreach (Categoria item in categoriasRaiz)
                             {
                                 <a asp-controller="Tienda"
                        asp-action="RecuperaLibros"
@@ -148,13 +149,13 @@
                             <!-- fila con imagen cliente y nombre y email de bienvenida-->
                             <div class="row" style="background:#ededed;">
                                 <div class="col text-center">
-                                    <img src="@_cliente.CuentaCliente.ImagenAvatarBASE64" style="width:115px; height:140px;" />
+                                    <img src="@cliente.CuentaCliente.ImagenAvatarBASE64" style="width:115px; height:140px;" />
                                 </div>
                             </div>
 
                             <div class="row" style="background:#ededed;">
                                 <div class="col">
-                                    <p class="text-muted"><small>Bienvenido @_cliente.Nombre @_cliente.Apellidos (@_cliente.CuentaCliente.Email)</small></p>
+                                    <p class="text-muted"><small>Bienvenido @cliente.Nombre @cliente.Apellidos (@cliente.CuentaCliente.Email)</small></p>
                                 </div>
                             </div>
 

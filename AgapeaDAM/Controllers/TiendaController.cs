@@ -34,7 +34,7 @@ namespace AgapeaDAM.Controllers
             //si el id esta vacio, estamos en la pag.inicial (se acaba de entrar)
             //se podria cargar los libros mas vendidos del mes, las ofertas especiales,...
             //nosotros, para q cargue algo, hacemos q si esta vacio cargue  libros de informatica...
-            if (String.IsNullOrEmpty(idCategoria)) idCategoria = "2";
+            
 
             // si el id esta vacio, estamos en la pagina incial 
             // se podrian cargar los libros mas vendido del mes, o las ofertas especiales, etc
