@@ -25,7 +25,7 @@
             <label><small>@Model.CantidadItem</small></label>
 
             <a asp-controller="Pedido"
-               asp-action="=OperarCantidad"
+               asp-action="OperarCantidad"
                asp-all-route-data="@(new Dictionary<string,string>{ {"id", Model.LibroItem.ISBN13}, {"operacion", "sumar" } })"
                class="btn btn-primary btn-sm"> + </a>
 

@@ -10,8 +10,8 @@
         public Provincia ProvDirec { get; set; }
         public Municipio MuniDirecc { get; set; }
         public String Pais { get; set; } = "España";
-        public Boolean EsPrincipal { get; set; } = false;
-        public Boolean EsFacturacion { get; set; } = false;
+        public Boolean EsPrincipal { get; set; } = true;
+        public Boolean EsFacturacion { get; set; } = true;
 
 
 
