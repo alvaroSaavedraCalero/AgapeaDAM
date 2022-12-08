@@ -3,13 +3,22 @@
 <div class="container">
 
     <div class="row">
-        <h2><strong>Mis Biblioteca</strong></h2>
+        <h2><strong>Mi Biblioteca</strong></h2>
     </div>
 
     <hr>
 
+    <!-- Fila para el boton de crear una nueva lista -->
     <div class="row">
-        <p>estoy mostrando mis listas</p>
+        <button type="button" class="btn btn-primary btn-sm">Crear una nueva lista</button>
+    </div>
+
+    <!-- Fila para mostrar las listas ya creadas -->
+    <div class="row">
+        @foreach (Lista lista in Model.MisListas)
+        {
+            <partial name="_VistaMiniLista" model="lista" />
+        }
     </div>
 
 </div>

@@ -1,0 +1,20 @@
+﻿
+@model Lista
+
+<div class="container">
+    <!--Fila con la imagen de la lista-->
+    <div class="row">
+        <div class="w-50 h-50">
+            <a asp-controller="Cliente" asp-action="MostrarLista">
+                <img src="@Model.ImagenListaBASE64" class="img-fluid rounded-start rounded-end" alt="..." />
+            </a>
+        </div>
+    </div>
+
+    <!--Columna para el nombre de la lista-->
+    <div class="row">
+        <a asp-controller="Cliente" asp-action="MostrarLista">
+            @Model.Titulo
+        </a>
+    </div>
+</div>

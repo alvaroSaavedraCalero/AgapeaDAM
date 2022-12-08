@@ -459,7 +459,18 @@ namespace AgapeaDAM.Controllers
 
         #region ... Mis Listas...
 
+        [HttpGet]
+        public IActionResult MisListas(Cliente cliente)
+        {
 
+            // Necesitamso recuperar de la base de datos las listas del cliente
+            // para guardarlas en el estado de sesion del cliente 
+
+            return View(cliente);
+        }
+        
+
+        
 
         #endregion
 

@@ -7,7 +7,7 @@
         public String Titulo { get; set; }
         public List<Libro> ListaLibros { get; set; }
         public String Descripcion { get; set; }
-        public String ImagenLista { get; set; }
+        public String ImagenListaBASE64 { get; set; } = "C:\\Users\\saave\\source\\repos\\AgapeaDAM (1)\\AgapeaDAM\\AgapeaDAM\\wwwroot\\";
 
 
         public Lista()
