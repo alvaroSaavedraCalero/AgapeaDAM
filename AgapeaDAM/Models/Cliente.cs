@@ -38,6 +38,7 @@ namespace AgapeaDAM.Models
         //public Dictionary<String,Direccion> MisDirecciones { get; set; }
 
         public List<Pedido> MisPedidos { get; set; }
+        public List<Lista> MisListas { get; set; }
 
         public Pedido PedidoActual { get; set; } = new Pedido();
 
@@ -49,6 +50,7 @@ namespace AgapeaDAM.Models
             this.CuentaCliente = new Cuenta();
             this.MisDireciones = new List<Direccion>();
             this.MisPedidos = new List<Pedido>();
+            this.MisListas = new List<Lista>();
         }
 
 

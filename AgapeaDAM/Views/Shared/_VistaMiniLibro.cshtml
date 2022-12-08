@@ -9,7 +9,7 @@
         <div class="col-md-4 text-center" style="height: 170px">
             <div class="w-100" style="height: 80%">
                 <a asp-controller="Tienda" asp-action="MostrarDetallesLibro"
-                   asp-all-route-data="@(new Dictionary<String,String>{{"isbn13", Model.ISBN13},{"titulo", Model.Titulo}})">
+                   asp-all-route-data="@(new Dictionary<String,String>{{"idisbn13", Model.ISBN13},{"titulo", Model.Titulo}})">
                     <img src="@Model.ImagenLibroBASE64" class="img-fluid rounded-start rounded-end" alt="...">
                 </a>
             </div>

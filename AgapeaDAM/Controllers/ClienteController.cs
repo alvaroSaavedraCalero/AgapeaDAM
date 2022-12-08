@@ -457,8 +457,14 @@ namespace AgapeaDAM.Controllers
         }
         #endregion
 
+        #region ... Mis Listas...
 
-        #region funciones especiales
+
+
+        #endregion
+
+
+        #region ...funciones especiales...
         [HttpGet]
         public IActionResult activarCuenta(String id)
         {

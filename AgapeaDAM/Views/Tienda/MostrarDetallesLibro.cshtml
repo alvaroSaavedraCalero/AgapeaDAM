@@ -1,0 +1,130 @@
+﻿@model Libro
+
+<div class="container">
+
+    <!-- Columna para la imagen del libro -->
+    <div class="row">
+        <div class="col-3">
+            <div class="container">
+                <div class="row">
+                    <img src="@Model.ImagenLibroBASE64" class="img-fluid rounded-start rounded-end" alt="...">
+                </div>
+            </div>
+        </div>
+
+        <!-- Columna para la informacion del libro -->
+        <div class="col-6">
+            <div class="container">
+
+                <div class="row">
+                    <p>@Model.Titulo</p>
+                </div>
+
+                <div class="row">
+                    <p>@Model.Autores</p>
+                </div>
+
+                <div class="row">
+                    <hr />
+                </div>
+
+                <div class="row">
+                    <p>Detalles del Libro</p>
+                </div>
+
+                <div class="row">
+                    <div class="col">
+                        <div class="row">
+                            <p>Editorial</p>
+                        </div>
+                        <div class="row">
+                            <p>Edición</p>
+                        </div>
+                        <div class="row">
+                            <p>Páginas</p>
+                        </div>
+                        <div class="row">
+                            <p>Idioma</p>
+                        </div>
+                        <div class="row">
+                            <p>ISBN</p>
+                        </div>
+                        <div class="row">
+                            <p>ISBN-10</p>
+                        </div>
+                        <div class="row">
+                            <p>Encuadernación</p>
+                        </div>
+                    </div>
+
+                    <div class="col">
+                        <div class="row">
+                            <p>@Model.Editorial</p>
+                        </div>
+                        <div class="row">
+                            <p>@Model.Edicion</p>
+                        </div>
+                        <div class="row">
+                            <p>@Model.NumeroPaginas</p>
+                        </div>
+                        <div class="row">
+                            <p>@Model.Idioma</p>
+                        </div>
+                        <div class="row">
+                            <p>@Model.ISBN13</p>
+                        </div>
+                        <div class="row">
+                            <p>@Model.ISBN10</p>
+                        </div>
+                        <div class="row">
+                            <p>@Model.Encuadernacion</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+
+        </div>
+
+        <div class="col-3">
+
+            <div class="container">
+
+                <div class="row">
+                    <strong>@Model.Precio €</strong>
+                </div>
+
+                <div class="row">
+                    <p>Envío gratis por compras superiores a 18€</p>
+                </div>
+
+                <div class="row">
+                    <a class="btn btn-primary btn-sm"
+                       id="btnComprar-@Model.ISBN13"
+                       asp-controller="Pedido"
+                       asp-action="AddLibroPedido"
+                       asp-all-route-data="@(new Dictionary<String,String>{{"id", Model.ISBN13} })">
+                        Comprar
+                    </a>
+                </div>
+
+                <div class="row">
+                    <p>Realice el envío en <strong>24 horas</strong> y lo recibes en casa <strong>mañana</strong></p>
+                </div>
+
+                <div class="row">
+
+                    <a class="btn btn-danger btn-sm"
+                       id="btnLista-@Model.ISBN13"
+                       asp-controller="Tienda"
+                       asp-action="AddLibroLista"
+                       asp-all-route-data="@(new Dictionary<String,String>{{"id", Model.ISBN13}})">
+                        Añadir a Deseo
+                    </a>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

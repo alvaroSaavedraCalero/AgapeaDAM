@@ -47,6 +47,18 @@ namespace AgapeaDAM.Controllers
             return View(listaLibros);
         }
 
+        /// <summary>
+        /// Metodo para mostrar la vista del libro que se seleccione
+        /// </summary>
+        /// <param name="idISBN13">ISBN13 del libro seleccionado</param>
+        /// <returns>La propia vista MostrarDetallesLibro</returns>
+        [HttpGet]
+        public IActionResult MostrarDetallesLibro(String idISBN13)
+        {
+            Libro libroSeleccionado = this.servicioBD.recuperarLibroPorISBN13(idISBN13);
+            return View(libroSeleccionado);
+        }
+
         #endregion
 
     }
