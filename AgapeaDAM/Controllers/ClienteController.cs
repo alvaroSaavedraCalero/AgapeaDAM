@@ -460,13 +460,44 @@ namespace AgapeaDAM.Controllers
         #region ... Mis Listas...
 
         [HttpGet]
-        public IActionResult MisListas(Cliente cliente)
+        public IActionResult MisListas()
         {
+            try
+            {
+                Cliente cliente = JsonSerializer.Deserialize<Cliente>(HttpContext.Session.GetString("datosCliente"));
+                return View(cliente);
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction("Login");
+            }
+        }
 
+        [HttpGet]
+        public IActionResult MostrarLista()
+        {
             // Necesitamso recuperar de la base de datos las listas del cliente
             // para guardarlas en el estado de sesion del cliente 
+            // y retornamos el cliente con los datos de las listas
+            try
+            {
+                Cliente cliente = JsonSerializer.Deserialize<Cliente>(HttpContext.Session.GetString("datosCliente"));
 
-            return View(cliente);
+                List<Lista> listasBD = this.__servicioBD.recuperaListas(cliente.IdCliente);
+                foreach (Lista lista in listasBD)
+                {
+                    cliente.MisListas.Add(lista);
+                }
+
+                return View(cliente);
+            }
+            catch (Exception ex)
+            {
+                // Si no encontramos el cliente le hacemos que se vuelva a logear
+                return RedirectToAction("Login");
+            }
+            
+                
         }
         
 

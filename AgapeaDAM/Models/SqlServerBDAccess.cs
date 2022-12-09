@@ -440,6 +440,44 @@ namespace AgapeaDAM.Models
             }
         }
 
+        public List<Lista> recuperaListas(String idCliente)
+        {
+            try
+            {
+                SqlConnection conexion = new SqlConnection(this.CadenaConexionSever);
+                conexion.Open();
+
+                SqlCommand seletListas = new SqlCommand("select * from dbo.Listas where IdCliente = @idc", conexion);
+                seletListas.Parameters.AddWithValue("@idc", idCliente);
+                List<Lista> listaRetorno = new List<Lista>();
+
+                SqlDataReader cursor = seletListas.ExecuteReader();
+                if (cursor.HasRows)
+                {
+                    while (cursor.Read())
+                    {
+                        Lista l = new Lista
+                        {
+                            IdLista = cursor["IdLista"].ToString(),
+                            IdCliente = idCliente,
+                            Titulo = cursor["Titulo"].ToString(),
+                            Descripcion = cursor["Descripcion"].ToString(),
+                            ImagenListaBASE64 = cursor["ImagenLista"].ToString()
+                        };
+                        listaRetorno.Add(l);
+                    }
+                    return listaRetorno;
+                } else
+                {
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
         #endregion
 
         #region ... metodos Tienda ...

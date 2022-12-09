@@ -22,7 +22,7 @@
 
         #region ----- Metodos de Mis Listas -----
 
-        
+        public List<Lista> recuperaListas(String idCliente);
 
         #endregion
 
